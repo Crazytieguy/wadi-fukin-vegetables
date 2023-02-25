@@ -1,27 +1,28 @@
 <script lang="ts">
-  import MediaQuery from 'svelte-media-queries';
   import { page } from '$app/stores';
   import '@picocss/pico';
   import Links from './Links.svelte';
+  import { afterNavigate } from '$app/navigation';
+
+  let detailsOpen = false;
+
+  afterNavigate(() => (detailsOpen = false));
 </script>
 
 <header>
   <nav>
-    <ul>
-      <MediaQuery query="(max-width: 992px)" let:matches>
-        {#if matches}
-          <li>
-            <details role="list">
-              <summary aria-haspopup="listbox">Menu</summary>
-              <ul role="listbox">
-                <Links />
-              </ul>
-            </details>
-          </li>
-        {:else}
-          <Links />
-        {/if}
-      </MediaQuery>
+    <ul class="mobile">
+      <li>
+        <details role="list" bind:open={detailsOpen}>
+          <summary aria-haspopup="listbox">Menu</summary>
+          <ul role="listbox">
+            <Links />
+          </ul>
+        </details>
+      </li>
+    </ul>
+    <ul class="desktop">
+      <Links />
     </ul>
     <ul>
       <li>
@@ -37,3 +38,17 @@
 <main>
   <slot />
 </main>
+
+<style>
+  .desktop {
+    display: none;
+  }
+  @media (min-width: 992px) {
+    .mobile {
+      display: none;
+    }
+    .desktop {
+      display: flex;
+    }
+  }
+</style>

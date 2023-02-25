@@ -8,7 +8,7 @@
 {:else if $page.status == 401}
   <h1>Access Denied</h1>
   <p>
-    You must be <a href="/auth/signin" data-sveltekit-preload-data="off">signed in</a> view this page
+    You must be <a href="/auth/signin" data-sveltekit-preload-data="off">signed in</a> to view this page
   </p>
 {:else}
   <h1>Error</h1>
