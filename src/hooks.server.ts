@@ -16,9 +16,7 @@ export const handle = SvelteKitAuth({
   ],
   callbacks: {
     session({ session, user }) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      session.user.isAdmin = user.isAdmin;
+      session.user = { ...user, ...session.user };
       return session;
     }
   }

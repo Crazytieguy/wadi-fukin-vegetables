@@ -4,6 +4,10 @@
   import Links from './Links.svelte';
   import { afterNavigate } from '$app/navigation';
 
+  let [authHref, authText] = $page.data.session
+    ? ['/auth/signout', 'Sign out']
+    : ['/auth/signin', 'Sign in'];
+
   let detailsOpen = false;
 
   afterNavigate(() => (detailsOpen = false));
@@ -26,11 +30,7 @@
     </ul>
     <ul>
       <li>
-        {#if $page.data.session}
-          <a href="/auth/signout" data-sveltekit-preload-data="off" role="button">Sign out</a>
-        {:else}
-          <a href="/auth/signin" data-sveltekit-preload-data="off" role="button">Sign in</a>
-        {/if}
+        <a href={authHref} data-sveltekit-preload-data="off" role="button">{authText}</a>
       </li>
     </ul>
   </nav>
