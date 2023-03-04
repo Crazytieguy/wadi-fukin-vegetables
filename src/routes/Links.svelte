@@ -1,13 +1,12 @@
 <script lang="ts">
   import { page } from '$app/stores';
 
-  // @ts-ignore
-  let isAdmin = $page.data.session?.user?.isAdmin;
+  export let isAdmin: boolean | undefined;
   const links = [
     { href: '/', label: 'Home' },
     { href: '/choose-vegetables', label: 'Choose Vegetables' },
     { href: '/order-history', label: 'Order History' },
-    { href: '/add-vegetables', label: 'Add Vegetables', adminOnly: true },
+    { href: '/manage-vegetables', label: 'Manage Vegetables', adminOnly: true },
     { href: '/manage-order', label: 'Manage Order', adminOnly: true }
   ];
 </script>

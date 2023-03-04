@@ -1,0 +1,5 @@
+table img {
+  max-height: 10rem;
+  border-radius: 10%;
+  border: 0.3rem outset black;
+}

@@ -1,12 +1,17 @@
 <script lang="ts">
-  import { page } from '$app/stores';
+  import type { PageData } from './$types';
   import '@picocss/pico';
+  import './global.css';
   import Links from './Links.svelte';
   import { afterNavigate } from '$app/navigation';
 
-  let [authHref, authText] = $page.data.session
+  export let data: PageData;
+
+  let [authHref, authText] = data.session
     ? ['/auth/signout', 'Sign out']
     : ['/auth/signin', 'Sign in'];
+
+  let isAdmin = data.session?.user?.isAdmin;
 
   let detailsOpen = false;
 
@@ -20,13 +25,13 @@
         <details role="list" bind:open={detailsOpen}>
           <summary aria-haspopup="listbox">Menu</summary>
           <ul role="listbox">
-            <Links />
+            <Links {isAdmin} />
           </ul>
         </details>
       </li>
     </ul>
     <ul class="desktop">
-      <Links />
+      <Links {isAdmin} />
     </ul>
     <ul>
       <li>

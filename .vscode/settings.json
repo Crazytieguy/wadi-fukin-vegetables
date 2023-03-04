@@ -3,5 +3,9 @@
   "[svelte]": {
     "editor.defaultFormatter": "svelte.svelte-vscode"
   },
-  "editor.tabSize": 2
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "editor.tabSize": 2,
+  "editor.inlineSuggest.enabled": false
 }

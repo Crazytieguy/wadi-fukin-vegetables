@@ -3,8 +3,24 @@ import GoogleProvider from '@auth/core/providers/google';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { prisma } from '$lib/server/prismaClient';
 import { GOOGLE_ID, GOOGLE_SECRET } from '$env/static/private';
+import { error, type Handle } from '@sveltejs/kit';
+import { sequence } from '@sveltejs/kit/hooks';
 
-export const handle = SvelteKitAuth({
+const addAuthorization = (async ({ event, resolve }) => {
+  event.locals.requireLogin = async () => {
+    const session = await event.locals.getSession();
+    if (!session?.user) throw error(401, 'not signed in');
+    return { user: session.user };
+  };
+  event.locals.requireAdmin = async () => {
+    const { user } = await event.locals.requireLogin();
+    if (!user.isAdmin) throw error(403, 'not an admin');
+    return { user };
+  };
+  return await resolve(event);
+}) satisfies Handle;
+
+const svelteKitAuth = SvelteKitAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -21,3 +37,5 @@ export const handle = SvelteKitAuth({
     }
   }
 });
+
+export const handle = sequence(svelteKitAuth, addAuthorization);

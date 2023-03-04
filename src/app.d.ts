@@ -12,6 +12,8 @@ declare global {
     // interface Error {}
     interface Locals {
       getSession(): Promise<Session | null>;
+      requireLogin(): Promise<{ user: Prisma.UserSelect }>;
+      requireAdmin(): Promise<{ user: Prisma.UserSelect }>;
     }
     interface PageData {
       session: Session | null;
