@@ -11,13 +11,36 @@ datasource db {
 }
 
 model Vegetable {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  imageUrl  String
-  unit      String // kg, g, l, ml, etc
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String           @id @default(cuid())
+  name            String           @unique
+  imageUrl        String
+  unit            String // kg, g, l, ml, etc
+  pricePerUnit    Float
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  orderVegetables OrderVegetable[]
 }
+
+model Order {
+  id              String           @id @default(cuid())
+  isActive        Boolean          @default(true)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  orderVegetables OrderVegetable[]
+
+  @@index([createdAt])
+}
+
+model OrderVegetable {
+  order       Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId     String
+  vegetable   Vegetable @relation(fields: [vegetableId], references: [id], onDelete: Cascade)
+  vegetableId String
+
+  @@id([orderId, vegetableId])
+}
+
+// From Auth.js
 
 model Account {
   id                String  @id @default(cuid())

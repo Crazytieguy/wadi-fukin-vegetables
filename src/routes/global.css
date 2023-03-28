@@ -1,5 +1,18 @@
+td {
+  max-width: 10rem;
+}
 table img {
-  max-height: 10rem;
+  max-width: min(10rem, 100%);
   border-radius: 10%;
-  border: 0.3rem outset black;
+  border: 0.2rem outset black;
+}
+@media not (min-width: 992px) {
+  .desktop {
+    display: none;
+  }
+}
+@media (min-width: 992px) {
+  .mobile {
+    display: none;
+  }
 }

@@ -1,12 +1,12 @@
 import { prisma } from '$lib/server/prismaClient';
 import { z } from 'zod';
-import type { Actions, PageServerLoad } from './$types';
-import { getValidatedFormData } from '$lib/server/actions';
+import { superValidate } from 'sveltekit-superforms/server';
+import { fail } from '@sveltejs/kit';
 
 const createVegetableSchema = z.object({
   name: z.string(),
   unit: z.string(),
-  image: z.instanceof(File)
+  pricePerUnit: z.number().multipleOf(0.01).positive()
 });
 
 const fileToDataUrl = async (image: File) => {
@@ -17,18 +17,27 @@ const fileToDataUrl = async (image: File) => {
 export const actions = {
   default: async ({ request, locals }) => {
     await locals.requireAdmin();
-    const result = await getValidatedFormData(createVegetableSchema, request);
-    if (!result.success) return result.fail;
-    const { image, name, unit } = result.data;
+    const formData = await request.formData();
+    const form = await superValidate(formData, createVegetableSchema);
+    if (!form.valid) {
+      return fail(400, { form });
+    }
+    const image = formData.get('image');
+    if (!(image instanceof File)) {
+      return fail(400, { form });
+    }
+    const { name, unit, pricePerUnit } = form.data;
     const imageUrl = await fileToDataUrl(image);
-    await prisma.vegetable.create({ data: { name, unit, imageUrl } });
-    return { success: true };
+    await prisma.vegetable.create({ data: { name, unit, imageUrl, pricePerUnit } });
+    return { form };
   }
-} satisfies Actions;
+};
 
-export const load = (async ({ locals }) => {
+export const load = async (event) => {
+  const form = superValidate(event, createVegetableSchema);
   return {
-    ...(await locals.requireAdmin()),
-    vegetables: await prisma.vegetable.findMany()
+    ...(await event.locals.requireAdmin()),
+    vegetables: prisma.vegetable.findMany(),
+    form
   };
-}) satisfies PageServerLoad;
+};

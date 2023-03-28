@@ -43,17 +43,3 @@
 <main>
   <slot />
 </main>
-
-<style>
-  .desktop {
-    display: none;
-  }
-  @media (min-width: 992px) {
-    .mobile {
-      display: none;
-    }
-    .desktop {
-      display: flex;
-    }
-  }
-</style>
