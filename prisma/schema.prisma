@@ -11,33 +11,49 @@ datasource db {
 }
 
 model Vegetable {
-  id              String           @id @default(cuid())
-  name            String           @unique
-  imageUrl        String
-  unit            String // kg, g, l, ml, etc
-  pricePerUnit    Float
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  orderVegetables OrderVegetable[]
+  id                  String               @id @default(cuid())
+  name                String               @unique
+  imageUrl            String
+  unit                String // kg, g, l, ml, etc
+  pricePerUnit        Float
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  orderVegetables     OrderVegetable[]
+  userOrderVegetables UserOrderVegetable[]
 }
 
 model Order {
-  id              String           @id @default(cuid())
-  isActive        Boolean          @default(true)
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  orderVegetables OrderVegetable[]
+  id                  String               @id @default(cuid())
+  isActive            Boolean              @default(true)
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  orderVegetables     OrderVegetable[]
+  userOrderVegetables UserOrderVegetable[]
 
   @@index([createdAt])
 }
 
 model OrderVegetable {
-  order       Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  orderId     String
-  vegetable   Vegetable @relation(fields: [vegetableId], references: [id], onDelete: Cascade)
-  vegetableId String
+  order               Order                @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId             String
+  vegetable           Vegetable            @relation(fields: [vegetableId], references: [id], onDelete: Cascade)
+  vegetableId         String
+  userOrderVegetables UserOrderVegetable[]
 
   @@id([orderId, vegetableId])
+}
+
+model UserOrderVegetable {
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+  order          Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId        String
+  vegetable      Vegetable      @relation(fields: [vegetableId], references: [id], onDelete: Cascade)
+  orderVegetable OrderVegetable @relation(fields: [orderId, vegetableId], references: [orderId, vegetableId], onDelete: Cascade)
+  vegetableId    String
+  quantity       Int
+
+  @@id([userId, orderId, vegetableId])
 }
 
 // From Auth.js
@@ -70,14 +86,15 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  isAdmin       Boolean   @default(false)
-  accounts      Account[]
-  sessions      Session[]
+  id                  String               @id @default(cuid())
+  name                String?
+  email               String?              @unique
+  emailVerified       DateTime?
+  image               String?
+  isAdmin             Boolean              @default(false)
+  accounts            Account[]
+  sessions            Session[]
+  userOrderVegetables UserOrderVegetable[]
 }
 
 model VerificationToken {

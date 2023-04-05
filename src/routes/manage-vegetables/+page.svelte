@@ -10,23 +10,25 @@
 
 <form method="POST" use:enhance>
   <table role="grid">
-    <thead>
-      <tr>
-        <th scope="col">Image</th>
-        <th scope="col">Name</th>
-        <th scope="col">Unit</th>
-        <th scope="col">Price</th>
-      </tr>
-    </thead>
     <tbody>
       {#each data.vegetables as { id, name, imageUrl, unit, pricePerUnit } (id)}
         <tr>
           <td>
             <img src={imageUrl} alt={name} />
+            <p class="mobile">
+              {name}
+            </p>
           </td>
-          <td>{name}</td>
-          <td>{unit}</td>
-          <td>₪{pricePerUnit.toFixed(2)}</td>
+          <td class="desktop">
+            <p>
+              {name}
+            </p>
+          </td>
+          <td>
+            <p>
+              ₪{pricePerUnit.toFixed(2)} per {unit}
+            </p>
+          </td>
         </tr>
       {/each}
     </tbody>
@@ -34,7 +36,7 @@
   <artice>
     <div class="grid">
       <label>
-        Name:
+        <p>Name:</p>
         <input
           type="text"
           name="name"
@@ -44,13 +46,7 @@
         />
       </label>
       <label>
-        Image:
-        <input type="file" accept="image/*" name="image" required />
-      </label>
-    </div>
-    <div class="grid">
-      <label>
-        Unit:
+        <p>Unit:</p>
         <input
           type="text"
           name="unit"
@@ -59,8 +55,10 @@
           {...$constraints.unit}
         />
       </label>
+    </div>
+    <div class="grid">
       <label>
-        Price:
+        <p>Price:</p>
         <input
           type="number"
           name="pricePerUnit"
@@ -69,7 +67,22 @@
           {...$constraints.pricePerUnit}
         />
       </label>
+      <label>
+        <p>Image:</p>
+        <input type="file" accept="image/*" name="image" required />
+      </label>
     </div>
   </artice>
   <button class="secondary">Add Vegetable</button>
 </form>
+
+<style>
+  label {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+  label p {
+    min-width: 3rem;
+  }
+</style>

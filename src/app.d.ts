@@ -3,7 +3,8 @@
 import type { Prisma } from '@prisma/client';
 import type { Session as CoreSession } from '@auth/core/types';
 
-type Session = CoreSession & { user?: Prisma.UserSelect };
+type User = Prisma.UserGetPayload<{}>;
+type Session = CoreSession & { user?: User };
 
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
@@ -12,8 +13,8 @@ declare global {
     // interface Error {}
     interface Locals {
       getSession(): Promise<Session | null>;
-      requireLogin(): Promise<{ user: Prisma.UserSelect }>;
-      requireAdmin(): Promise<{ user: Prisma.UserSelect }>;
+      requireLogin(): Promise<{ user: User }>;
+      requireAdmin(): Promise<{ user: User }>;
     }
     interface PageData {
       session: Session | null;

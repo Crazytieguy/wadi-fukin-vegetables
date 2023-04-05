@@ -5,6 +5,10 @@ table img {
   max-width: min(10rem, 100%);
   border-radius: 10%;
   border: 0.2rem outset black;
+  margin-bottom: 0.5rem;
+}
+table {
+  font-size: 1.5rem;
 }
 @media not (min-width: 992px) {
   .desktop {

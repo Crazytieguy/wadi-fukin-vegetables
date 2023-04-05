@@ -7,5 +7,5 @@
     "editor.defaultFormatter": "Prisma.prisma"
   },
   "editor.tabSize": 2,
-  "editor.inlineSuggest.enabled": false
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
