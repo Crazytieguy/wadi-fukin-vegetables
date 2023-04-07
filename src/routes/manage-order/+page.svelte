@@ -28,13 +28,16 @@
           <td>
             <img src={imageUrl} alt={name} />
           </td>
-          <td>{name}</td>
           <td>
+            <h3>
+              {name}
+            </h3>
             <input
               type="checkbox"
               name="vegetableIds"
               value={id}
               disabled={orderIsActive}
+              role="switch"
               bind:group={$createOrderForm.vegetableIds}
             />
           </td>

@@ -15,19 +15,19 @@
         <tr>
           <td>
             <img src={imageUrl} alt={name} />
-            <p class="mobile">
-              {name}
-            </p>
-          </td>
-          <td class="desktop">
-            <p>
-              {name}
-            </p>
           </td>
           <td>
-            <p>
-              ₪{pricePerUnit.toFixed(2)} per {unit}
-            </p>
+            <hgroup>
+              <h3>
+                {name}
+              </h3>
+              <p>
+                <strong>
+                  ₪ {pricePerUnit}
+                </strong>
+                per {unit}
+              </p>
+            </hgroup>
           </td>
         </tr>
       {/each}

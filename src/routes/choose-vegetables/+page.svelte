@@ -19,36 +19,38 @@
           <tr>
             <td>
               <img src={vegetable.imageUrl} alt={vegetable.name} />
-              <p class="mobile">
-                {vegetable.name}
-              </p>
             </td>
             <td class="desktop">
-              <p>
-                {vegetable.name}
-              </p>
+              <hgroup>
+                <h3>
+                  {vegetable.name}
+                </h3>
+                <p>
+                  <strong>
+                    ₪ {vegetable.pricePerUnit}
+                  </strong>
+                  per {vegetable.unit}
+                </p>
+              </hgroup>
             </td>
-            <td class="desktop">
-              <p>
-                <strong>
-                  ₪{vegetable.pricePerUnit}
-                </strong>
-                per {vegetable.unit}
-              </p>
-            </td>
-            <td class="small">
+            <td>
+              <hgroup class="mobile">
+                <h3>
+                  {vegetable.name}
+                </h3>
+                <p>
+                  <strong>
+                    ₪ {vegetable.pricePerUnit}
+                  </strong>
+                  per {vegetable.unit}
+                </p>
+              </hgroup>
               <input
                 type="number"
                 name={vegetableId}
                 bind:value={$form[vegetableId]}
                 {...notypecheck($constraints)[vegetableId]}
               />
-              <p class="mobile price">
-                <strong>
-                  ₪{vegetable.pricePerUnit}
-                </strong>
-                per {vegetable.unit}
-              </p>
             </td>
           </tr>
         {/each}
@@ -59,9 +61,3 @@
 {:else}
   <p>There is no active order.</p>
 {/if}
-
-<style>
-  .price {
-    text-align: center;
-  }
-</style>

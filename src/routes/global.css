@@ -1,14 +1,13 @@
 td {
-  max-width: 10rem;
+  max-width: 12rem;
 }
 table img {
-  max-width: min(10rem, 100%);
+  max-width: min(12rem, 100%);
   border-radius: 10%;
   border: 0.2rem outset black;
-  margin-bottom: 0.5rem;
 }
-table {
-  font-size: 1.5rem;
+table input[type='number'] {
+  max-width: 6rem;
 }
 @media not (min-width: 992px) {
   .desktop {
