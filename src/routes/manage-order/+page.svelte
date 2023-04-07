@@ -16,9 +16,9 @@
     delayed: closeFormDelayed
   } = superForm(data.closeOrderForm);
 
-  $: console.log({ $createOrderForm, $closeOrderForm, order: data.mostRecentOrder });
-
   $: orderIsActive = data.mostRecentOrder?.isActive;
+
+  let dialog: HTMLDialogElement;
 </script>
 
 <h1>Manage Order</h1>
@@ -51,8 +51,44 @@
     </tbody>
   </table>
 </form>
-{#if orderIsActive}
-  <button class="secondary" form="closeOrder" aria-busy={$closeFormDelayed}>Close Order</button>
-{:else}
-  <button class="secondary" form="createOrder" aria-busy={$createFormDelayed}>Create Order</button>
-{/if}
+<dialog bind:this={dialog}>
+  <article>
+    <h3>Are you sure?</h3>
+    <footer>
+      <button
+        class="contrast"
+        on:click={() => {
+          dialog.close();
+        }}
+      >
+        Cancel
+      </button>
+      {#if orderIsActive}
+        <button form="closeOrder" aria-busy={$closeFormDelayed}>Close Order</button>
+      {:else}
+        <button form="createOrder" aria-busy={$createFormDelayed}>Create Order</button>
+      {/if}
+    </footer>
+  </article>
+</dialog>
+<button
+  class="secondary"
+  on:click={() => {
+    dialog.showModal();
+  }}
+  aria-busy={$createFormDelayed || $closeFormDelayed}
+>
+  {#if orderIsActive}
+    Close Order
+  {:else}
+    Create Order
+  {/if}
+</button>
+
+<style>
+  dialog button {
+    display: inline-block;
+    width: auto;
+    margin-inline: 0.5rem;
+  }
+</style>
