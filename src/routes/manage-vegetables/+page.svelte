@@ -3,7 +3,7 @@
 
   export let data;
 
-  const { form, errors, constraints, enhance } = superForm(data.form, { resetForm: true });
+  const { form, errors, constraints, enhance, delayed } = superForm(data.form, { resetForm: true });
 </script>
 
 <h1>Manage Vegetables</h1>
@@ -73,7 +73,7 @@
       </label>
     </div>
   </artice>
-  <button class="secondary">Add Vegetable</button>
+  <button class="secondary" aria-busy={$delayed}>Add Vegetable</button>
 </form>
 
 <style>

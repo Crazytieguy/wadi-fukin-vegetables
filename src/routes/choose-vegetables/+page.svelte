@@ -3,12 +3,24 @@
 
   export let data;
 
-  const { errors, form, enhance, constraints } = superForm(data.form);
+  const { errors, form, enhance, constraints, delayed } = superForm(data.form);
+
+  $: userHasOrdered = !!data.lastOrder?.userOrderVegetables.length;
+  $: total = data.lastOrder?.orderVegetables.reduce(
+    (total, { vegetable }) => total + vegetable.pricePerUnit * $form[vegetable.id],
+    0
+  );
 
   const notypecheck = (x: any) => x;
 </script>
 
-<h1>Choose Vegetables</h1>
+<h1>
+  {#if userHasOrdered}
+    Update Your Order
+  {:else}
+    Choose Vegetables
+  {/if}
+</h1>
 
 {#if data.lastOrder?.isActive}
   <form method="POST" use:enhance>
@@ -56,8 +68,23 @@
         {/each}
       </tbody>
     </table>
-    <button class="secondary">Update Order</button>
+    <h3 class="total">
+      Total ₪ {total}
+    </h3>
+    <button class="secondary" aria-busy={$delayed}>
+      {#if userHasOrdered}
+        Update Order
+      {:else}
+        Submit Order
+      {/if}
+    </button>
   </form>
 {:else}
   <p>There is no active order.</p>
 {/if}
+
+<style>
+  .total {
+    text-align: center;
+  }
+</style>

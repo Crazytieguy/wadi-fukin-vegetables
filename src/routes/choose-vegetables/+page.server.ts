@@ -1,5 +1,5 @@
 import { prisma } from '$lib/server/prismaClient';
-import { fail } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import { z } from 'zod';
 
@@ -71,6 +71,6 @@ export const actions = {
       });
     });
     await Promise.all(promises);
-    return { form };
+    throw redirect(303, '/submitted');
   }
 };

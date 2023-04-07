@@ -3,12 +3,17 @@
 
   export let data;
 
-  const { form: createOrderForm, enhance: createFormEnhance } = superForm(data.createOrderForm);
+  const {
+    form: createOrderForm,
+    enhance: createFormEnhance,
+    delayed: createFormDelayed
+  } = superForm(data.createOrderForm);
 
   const {
     form: closeOrderForm,
     enhance: closeFormEnhance,
-    constraints: closeOrderConstraints
+    constraints: closeOrderConstraints,
+    delayed: closeFormDelayed
   } = superForm(data.closeOrderForm);
 
   $: console.log({ $createOrderForm, $closeOrderForm, order: data.mostRecentOrder });
@@ -47,7 +52,7 @@
   </table>
 </form>
 {#if orderIsActive}
-  <button class="secondary" form="closeOrder">Close Order</button>
+  <button class="secondary" form="closeOrder" aria-busy={$closeFormDelayed}>Close Order</button>
 {:else}
-  <button class="secondary" form="createOrder">Create Order</button>
+  <button class="secondary" form="createOrder" aria-busy={$createFormDelayed}>Create Order</button>
 {/if}

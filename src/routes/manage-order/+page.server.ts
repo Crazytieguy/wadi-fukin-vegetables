@@ -1,7 +1,7 @@
 import { prisma } from '$lib/server/prismaClient';
 import { z } from 'zod';
 import { superValidate } from 'sveltekit-superforms/server';
-import { fail } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 
 const createOrderSchema = z.object({
   vegetableIds: z.array(z.string()).nonempty()
@@ -28,7 +28,7 @@ export const actions = {
         }
       }
     });
-    return { form };
+    throw redirect(303, '/submitted');
   },
   closeOrder: async ({ request, locals }) => {
     await locals.requireAdmin();
@@ -42,7 +42,7 @@ export const actions = {
       data: { isActive: false },
       where: { id: form.data.id }
     });
-    return { form };
+    throw redirect(303, '/submitted');
   }
 };
 
