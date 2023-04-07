@@ -19,6 +19,22 @@
   $: orderIsActive = data.mostRecentOrder?.isActive;
 
   let dialog: HTMLDialogElement;
+  const openModal = () => {
+    document.documentElement.classList.remove('modal-is-closing');
+    document.documentElement.classList.add('modal-is-open', 'modal-is-opening');
+    setTimeout(() => {
+      document.documentElement.classList.remove('modal-is-opening');
+    }, 400);
+    dialog.showModal();
+  };
+  const closeModal = () => {
+    document.documentElement.classList.remove('modal-is-opening');
+    document.documentElement.classList.add('modal-is-closing');
+    setTimeout(() => {
+      document.documentElement.classList.remove('modal-is-closing', 'modal-is-open');
+      dialog.close();
+    }, 400);
+  };
 </script>
 
 <h1>Manage Order</h1>
@@ -55,14 +71,7 @@
   <article>
     <h3>Are you sure?</h3>
     <footer>
-      <button
-        class="contrast"
-        on:click={() => {
-          dialog.close();
-        }}
-      >
-        Cancel
-      </button>
+      <button class="contrast" on:click={closeModal}> Cancel </button>
       {#if orderIsActive}
         <button form="closeOrder" aria-busy={$closeFormDelayed}>Close Order</button>
       {:else}
@@ -71,13 +80,7 @@
     </footer>
   </article>
 </dialog>
-<button
-  class="secondary"
-  on:click={() => {
-    dialog.showModal();
-  }}
-  aria-busy={$createFormDelayed || $closeFormDelayed}
->
+<button class="secondary" on:click={openModal} aria-busy={$createFormDelayed || $closeFormDelayed}>
   {#if orderIsActive}
     Close Order
   {:else}
