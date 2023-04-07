@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte';
   import { superForm } from 'sveltekit-superforms/client';
 
   export let data;
@@ -35,6 +36,15 @@
       dialog.close();
     }, 400);
   };
+  onDestroy(() => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.classList.remove(
+        'modal-is-open',
+        'modal-is-opening',
+        'modal-is-closing'
+      );
+    }
+  });
 </script>
 
 <h1>Manage Order</h1>
