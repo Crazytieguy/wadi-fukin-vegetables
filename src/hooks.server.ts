@@ -21,6 +21,8 @@ const addAuthorization = (async ({ event, resolve }) => {
 }) satisfies Handle;
 
 const svelteKitAuth = SvelteKitAuth({
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   adapter: PrismaAdapter(prisma),
   providers: [
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
