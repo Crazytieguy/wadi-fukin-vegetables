@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte';
+  import VegetableImg from '$lib/VegetableImg.svelte';
+import { onDestroy } from 'svelte';
   import { superForm } from 'sveltekit-superforms/client';
 
   export let data;
@@ -57,7 +58,7 @@
       {#each data.vegetables as { id, name, imageUrl } (id)}
         <tr>
           <td>
-            <img src={imageUrl} alt={name} />
+            <VegetableImg name={name} imageUrl={imageUrl} />
           </td>
           <td>
             <h3>

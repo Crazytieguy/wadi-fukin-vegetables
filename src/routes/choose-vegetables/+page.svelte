@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { superForm } from 'sveltekit-superforms/client';
+  import VegetableImg from '$lib/VegetableImg.svelte';
+import { superForm } from 'sveltekit-superforms/client';
 
   export let data;
 
@@ -30,7 +31,7 @@
         {#each data.lastOrder.orderVegetables as { vegetable, vegetableId } (vegetableId)}
           <tr>
             <td>
-              <img src={vegetable.imageUrl} alt={vegetable.name} />
+              <VegetableImg {...vegetable} />
             </td>
             <td class="desktop">
               <hgroup>

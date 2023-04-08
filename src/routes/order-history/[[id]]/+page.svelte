@@ -1,4 +1,6 @@
 <script lang="ts">
+  import VegetableImg from '$lib/VegetableImg.svelte';
+
   export let data;
   const vegetableById = new Map(data.vegetables.map((vegetable) => [vegetable.id, vegetable]));
 
@@ -45,9 +47,9 @@
         {#each [...orderVegetables] as [vegetableId, quantity]}
           <tr>
             <td>
-              <img
-                src={vegetableById.get(vegetableId)?.imageUrl}
-                alt={vegetableById.get(vegetableId)?.name}
+              <VegetableImg
+                imageUrl={vegetableById.get(vegetableId)?.imageUrl}
+                name={vegetableById.get(vegetableId)?.name}
               />
             </td>
             <td>
