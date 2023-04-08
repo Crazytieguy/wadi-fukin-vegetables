@@ -18,6 +18,10 @@
   afterNavigate(() => (detailsOpen = false));
 </script>
 
+<svelte:head>
+  <title>Wadi Fukin Vegetables</title>
+  <meta name="description" content="an application for vegetable group orders from Wadi Fukin." />
+</svelte:head>
 <div class="app">
   <header>
     <nav>
