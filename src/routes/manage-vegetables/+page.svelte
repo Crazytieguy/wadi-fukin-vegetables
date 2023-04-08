@@ -1,5 +1,5 @@
 <script lang="ts">
-    import VegetableImg from '$lib/VegetableImg.svelte';
+  import VegetableImg from '$lib/VegetableImg.svelte';
   import { superForm } from 'sveltekit-superforms/client';
 
   export let data;
@@ -15,7 +15,7 @@
       {#each data.vegetables as { id, name, imageUrl, unit, pricePerUnit } (id)}
         <tr>
           <td>
-            <VegetableImg name={name} imageUrl={imageUrl} />
+            <VegetableImg {name} {imageUrl} />
           </td>
           <td>
             <hgroup>
@@ -48,13 +48,16 @@
       </label>
       <label>
         <p>Unit:</p>
-        <input
-          type="text"
+        <select
           name="unit"
           data-invalid={$errors.unit}
           bind:value={$form.unit}
           {...$constraints.unit}
-        />
+        >
+          <option value="Kg">Kg</option>
+          <option value="G">G</option>
+          <option value="Unit">Unit</option>
+        </select>
       </label>
     </div>
     <div class="grid">

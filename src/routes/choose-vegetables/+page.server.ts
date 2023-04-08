@@ -21,17 +21,17 @@ const getLastOrderAndSchema = async (userId: string) => {
     .object({
       orderId: z.literal(lastOrder.id).default(lastOrder.id),
       ...Object.fromEntries(
-        lastOrder.orderVegetables.map(({ vegetableId }) => [
+        lastOrder.orderVegetables.map(({ vegetableId, vegetable }) => [
           vegetableId,
           z
             .number()
             .nonnegative()
-            .int()
+            .multipleOf({ Kg: 0.5, G: 50, Unit: 1 }[vegetable.unit])
             .default(quantities[vegetableId] || 0)
         ])
       )
     })
-    .catchall(z.number().int());
+    .catchall(z.number());
   return { lastOrder, schema };
 };
 

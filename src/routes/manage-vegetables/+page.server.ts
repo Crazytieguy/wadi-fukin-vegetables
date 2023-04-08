@@ -6,7 +6,7 @@ import { v2 as cloudinary } from 'cloudinary';
 
 const createVegetableSchema = z.object({
   name: z.string(),
-  unit: z.string(),
+  unit: z.enum(['Kg', 'G', 'Unit']),
   pricePerUnit: z.number().multipleOf(0.01).positive()
 });
 

@@ -6,15 +6,21 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+enum Unit {
+  Kg
+  G
+  Unit
 }
 
 model Vegetable {
   id                  String               @id @default(cuid())
   name                String
   imageUrl            String
-  unit                String // kg, g, l, ml, etc
+  unit                Unit
   pricePerUnit        Float
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
@@ -51,7 +57,7 @@ model UserOrderVegetable {
   vegetable      Vegetable      @relation(fields: [vegetableId], references: [id], onDelete: Cascade)
   vegetableId    String
   orderVegetable OrderVegetable @relation(fields: [orderId, vegetableId], references: [orderId, vegetableId], onDelete: Cascade)
-  quantity       Int
+  quantity       Float
 
   @@id([userId, orderId, vegetableId])
 }
