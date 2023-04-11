@@ -1,13 +1,17 @@
-td {
-  max-width: 12rem;
+section.flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-around;
 }
-table img {
-  max-width: min(12rem, 100%);
-  border-radius: 10%;
-  border: 0.2rem outset black;
-}
-table input[type='number'] {
-  max-width: 6rem;
+.vegetable {
+  min-width: 9.5rem;
+  max-width: 14rem;
+  flex: 1;
+  margin: 0;
+  --block-spacing-vertical: var(--spacing);
+  --block-spacing-horizontal: var(--spacing);
+  border-radius: 0.5rem;
 }
 @media not (min-width: 992px) {
   .desktop {

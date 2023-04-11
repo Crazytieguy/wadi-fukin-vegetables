@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { crop } from '@cloudinary/url-gen/actions/resize';
+  import { fill } from '@cloudinary/url-gen/actions/resize';
   import { cld } from './cloudinaryClient';
 
   export let name: string;
@@ -11,10 +11,18 @@
   const size = Math.min(imageOriginalWidth, imageOriginalHeight, 480);
   const url = cld
     .image(imagePublicId)
-    .resize(crop(size, size))
+    .resize(fill(size, size))
     .format('auto')
     .quality('auto')
     .toURL();
 </script>
 
 <img height={size} width={size} src={url} alt={name} />
+
+<style>
+  img {
+    max-width: min(12rem, 100%);
+    border-radius: 10%;
+    border: 0.2rem outset black;
+  }
+</style>

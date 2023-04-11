@@ -24,6 +24,7 @@ model Vegetable {
   imageOriginalHeight Int
   unit                Unit
   pricePerUnit        Float
+  hidden              Boolean              @default(false)
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
   orderVegetables     OrderVegetable[]

@@ -1,10 +1,14 @@
 <script lang="ts">
   import VegetableImg from '$lib/VegetableImg.svelte';
-import { superForm } from 'sveltekit-superforms/client';
+  import { superForm } from 'sveltekit-superforms/client';
 
   export let data;
 
-  const { errors, form, enhance, constraints, delayed } = superForm(data.form);
+  const { form, enhance, constraints, delayed, capture, restore } = superForm(data.form, {
+    taintedMessage: null
+  });
+
+  export const snapshot = { capture, restore };
 
   $: userHasOrdered = !!data.lastOrder?.userOrderVegetables.length;
   $: total = data.lastOrder?.orderVegetables.reduce(
@@ -16,7 +20,7 @@ import { superForm } from 'sveltekit-superforms/client';
 </script>
 
 <h1>
-  {#if userHasOrdered}
+  {#if userHasOrdered && data.lastOrder?.isActive}
     Update Your Order
   {:else}
     Choose Vegetables
@@ -26,51 +30,34 @@ import { superForm } from 'sveltekit-superforms/client';
 {#if data.lastOrder?.isActive}
   <form method="POST" use:enhance>
     <input type="hidden" name="orderId" bind:value={$form.orderId} {...$constraints.orderId} />
-    <table>
-      <tbody>
-        {#each data.lastOrder.orderVegetables as { vegetable, vegetableId } (vegetableId)}
-          <tr>
-            <td>
-              <VegetableImg {...vegetable} />
-            </td>
-            <td class="desktop">
-              <hgroup>
-                <h3>
-                  {vegetable.name}
-                </h3>
-                <p>
-                  <strong>
-                    ₪ {vegetable.pricePerUnit}
-                  </strong>
-                  per {vegetable.unit}
-                </p>
-              </hgroup>
-            </td>
-            <td>
-              <hgroup class="mobile">
-                <h3>
-                  {vegetable.name}
-                </h3>
-                <p>
-                  <strong>
-                    ₪ {vegetable.pricePerUnit}
-                  </strong>
-                  per {vegetable.unit}
-                </p>
-              </hgroup>
-              <input
-                type="number"
-                name={vegetableId}
-                bind:value={$form[vegetableId]}
-                {...notypecheck($constraints)[vegetableId]}
-              />
-            </td>
-          </tr>
-        {/each}
-      </tbody>
-    </table>
+    <section class="flex">
+      {#each data.lastOrder.orderVegetables as { vegetable, vegetableId } (vegetableId)}
+        <article class="vegetable">
+          <p>
+            <VegetableImg {...vegetable} />
+          </p>
+          <hgroup>
+            <h3>
+              {vegetable.name}
+            </h3>
+            <p>
+              <strong>
+                ₪ {vegetable.pricePerUnit}
+              </strong>
+              per {vegetable.unit}
+            </p>
+          </hgroup>
+          <input
+            type="number"
+            name={vegetableId}
+            bind:value={$form[vegetableId]}
+            {...notypecheck($constraints)[vegetableId]}
+          />
+        </article>
+      {/each}
+    </section>
     <h3 class="total">
-      Total ₪ {total}
+      Total ₪ {total?.toFixed(2)}
     </h3>
     <button class="secondary" aria-busy={$delayed}>
       {#if userHasOrdered}
@@ -87,5 +74,13 @@ import { superForm } from 'sveltekit-superforms/client';
 <style>
   .total {
     text-align: center;
+  }
+  h3,
+  p {
+    margin-block: 0.5rem;
+  }
+  input[type='number'] {
+    max-width: 6rem;
+    margin-bottom: 0;
   }
 </style>

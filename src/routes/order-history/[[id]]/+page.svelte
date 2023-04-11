@@ -1,7 +1,10 @@
 <script lang="ts">
   import VegetableImg from '$lib/VegetableImg.svelte';
+  import { superForm } from 'sveltekit-superforms/client';
 
   export let data;
+  const { form, enhance, constraints, delayed } = superForm(data.form);
+
   const vegetableById = new Map(data.vegetables.map((vegetable) => [vegetable.id, vegetable]));
 
   const userNames = new Map(data.users.map((user) => [user.id, user.name]));
@@ -31,6 +34,12 @@
   };
 </script>
 
+{#if data.order?.isActive && data.user.isAdmin}
+  <form method="POST" use:enhance>
+    <input type="hidden" name="id" value={data.order.id} {...$constraints.id} />
+    <button class="secondary" aria-busy={$delayed}>Close Active Order</button>
+  </form>
+{/if}
 {#each [...userOrderVegetablesByUser] as [userId, orderVegetables]}
   <details>
     <!-- svelte-ignore a11y-no-redundant-roles -->
@@ -48,28 +57,24 @@
         </h5>
       </hgroup>
     </summary>
-    <table role="grid">
-      <tbody>
-        {#each [...orderVegetables].flatMap(vegIdQuantityToVegQuantity) as [vegetable, quantity]}
-          <tr>
-            <td>
-              <VegetableImg {...vegetable} />
-            </td>
-            <td>
-              <hgroup>
-                <h5>
-                  {vegetable.name}
-                </h5>
-                <h6>
-                  {quantity}
-                  {vegetable.unit}
-                </h6>
-              </hgroup>
-            </td>
-          </tr>
-        {/each}
-      </tbody>
-    </table>
+    <section class="flex">
+      {#each [...orderVegetables].flatMap(vegIdQuantityToVegQuantity) as [vegetable, quantity]}
+        <article class="vegetable">
+          <p>
+            <VegetableImg {...vegetable} />
+          </p>
+          <hgroup>
+            <h5>
+              {vegetable.name}
+            </h5>
+            <h6>
+              {quantity}
+              {vegetable.unit}
+            </h6>
+          </hgroup>
+        </article>
+      {/each}
+    </section>
   </details>
 {/each}
 

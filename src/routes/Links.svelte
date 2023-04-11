@@ -7,7 +7,7 @@
     { href: '/choose-vegetables', label: 'Choose Vegetables' },
     { href: '/order-history', label: 'Order History' },
     { href: '/manage-vegetables', label: 'Manage Vegetables', adminOnly: true },
-    { href: '/manage-order', label: 'Manage Order', adminOnly: true }
+    { href: '/create-order', label: 'Create Order', adminOnly: true }
   ];
 </script>
 

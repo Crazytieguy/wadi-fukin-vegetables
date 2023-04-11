@@ -6,16 +6,11 @@ import { fail, redirect } from '@sveltejs/kit';
 const createOrderSchema = z.object({
   vegetableIds: z.array(z.string()).nonempty()
 });
-const closeOrderSchema = z.object({
-  id: z.string()
-});
 
 export const actions = {
-  createOrder: async ({ request, locals }) => {
+  default: async ({ request, locals }) => {
     await locals.requireAdmin();
-    const form = await superValidate(request, createOrderSchema, {
-      id: 'create-order-form'
-    });
+    const form = await superValidate(request, createOrderSchema);
     if (!form.valid) {
       return fail(400, { form });
     }
@@ -29,20 +24,6 @@ export const actions = {
       }
     });
     throw redirect(303, '/submitted');
-  },
-  closeOrder: async ({ request, locals }) => {
-    await locals.requireAdmin();
-    const form = await superValidate(request, closeOrderSchema, {
-      id: 'close-order-form'
-    });
-    if (!form.valid) {
-      return fail(400, { form });
-    }
-    await prisma.order.update({
-      data: { isActive: false },
-      where: { id: form.data.id }
-    });
-    throw redirect(303, '/submitted');
   }
 };
 
@@ -52,6 +33,9 @@ export const load = async ({ request, locals }) => {
     orderBy: { createdAt: 'desc' },
     include: { orderVegetables: true }
   });
+  if (mostRecentOrder?.isActive) {
+    throw redirect(303, '/order-history');
+  }
   const defaultVegetables =
     mostRecentOrder?.orderVegetables.map(({ vegetableId }) => vegetableId) || [];
   const createOrderSchemaWithDefault = z.object({
@@ -61,11 +45,10 @@ export const load = async ({ request, locals }) => {
   });
   return {
     ...requireAdmin,
-    vegetables: prisma.vegetable.findMany(),
-    mostRecentOrder,
-    createOrderForm: superValidate(request, createOrderSchemaWithDefault, {
-      id: 'create-order-form'
+    vegetables: prisma.vegetable.findMany({
+      where: { hidden: false }
     }),
-    closeOrderForm: superValidate(request, closeOrderSchema, { id: 'close-order-form' })
+    mostRecentOrder,
+    form: superValidate(request, createOrderSchemaWithDefault)
   };
 };
