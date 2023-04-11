@@ -19,7 +19,9 @@ enum Unit {
 model Vegetable {
   id                  String               @id @default(cuid())
   name                String
-  imageUrl            String
+  imagePublicId       String
+  imageOriginalWidth  Int
+  imageOriginalHeight Int
   unit                Unit
   pricePerUnit        Float
   createdAt           DateTime             @default(now())

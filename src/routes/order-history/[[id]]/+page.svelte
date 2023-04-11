@@ -23,6 +23,12 @@
         totalOrderVegetables.set(vegetableId, accumulatedTotalQuantity + quantity);
       });
   }
+
+  let vegIdQuantityToVegQuantity = ([vegetableId, quantity]: [string, number]) => {
+    let veg = vegetableById.get(vegetableId);
+    if (!veg) return [];
+    return [[veg, quantity]] as const;
+  };
 </script>
 
 {#each [...userOrderVegetablesByUser] as [userId, orderVegetables]}
@@ -44,22 +50,19 @@
     </summary>
     <table role="grid">
       <tbody>
-        {#each [...orderVegetables] as [vegetableId, quantity]}
+        {#each [...orderVegetables].flatMap(vegIdQuantityToVegQuantity) as [vegetable, quantity]}
           <tr>
             <td>
-              <VegetableImg
-                imageUrl={vegetableById.get(vegetableId)?.imageUrl}
-                name={vegetableById.get(vegetableId)?.name}
-              />
+              <VegetableImg {...vegetable} />
             </td>
             <td>
               <hgroup>
                 <h5>
-                  {vegetableById.get(vegetableId)?.name}
+                  {vegetable.name}
                 </h5>
                 <h6>
                   {quantity}
-                  {vegetableById.get(vegetableId)?.unit}
+                  {vegetable.unit}
                 </h6>
               </hgroup>
             </td>

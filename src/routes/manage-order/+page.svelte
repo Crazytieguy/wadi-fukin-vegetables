@@ -55,10 +55,10 @@ import { onDestroy } from 'svelte';
 <form method="POST" action="?/createOrder" id="createOrder" use:createFormEnhance>
   <table>
     <tbody>
-      {#each data.vegetables as { id, name, imageUrl } (id)}
+      {#each data.vegetables as { id, name, ...imageProps } (id)}
         <tr>
           <td>
-            <VegetableImg name={name} imageUrl={imageUrl} />
+            <VegetableImg name={name} {...imageProps} />
           </td>
           <td>
             <h3>

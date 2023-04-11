@@ -4,7 +4,10 @@
 
   export let data;
 
-  const { form, errors, constraints, enhance, delayed } = superForm(data.form, { resetForm: true });
+  const { form, errors, constraints, enhance, delayed } = superForm(data.form, {
+    resetForm: true,
+    taintedMessage: null
+  });
 </script>
 
 <h1>Manage Vegetables</h1>
@@ -12,10 +15,10 @@
 <form method="POST" use:enhance>
   <table role="grid">
     <tbody>
-      {#each data.vegetables as { id, name, imageUrl, unit, pricePerUnit } (id)}
+      {#each data.vegetables as { id, name, unit, pricePerUnit, ...imageProps } (id)}
         <tr>
           <td>
-            <VegetableImg {name} {imageUrl} />
+            <VegetableImg {name} {...imageProps} />
           </td>
           <td>
             <hgroup>
