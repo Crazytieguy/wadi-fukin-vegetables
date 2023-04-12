@@ -34,7 +34,7 @@
       {#each data.lastOrder.orderVegetables as { vegetable, vegetableId } (vegetableId)}
         <article class="vegetable">
           <p>
-            <VegetableImg {...vegetable} />
+            <VegetableImg {vegetable} />
           </p>
           <hgroup>
             <h3>

@@ -10,18 +10,18 @@
 <h1>Create Order</h1>
 <form method="POST" use:enhance>
   <section class="flex">
-    {#each data.vegetables as { id, name, ...imageProps } (id)}
+    {#each data.vegetables as vegetable (vegetable.id)}
       <article class="vegetable">
         <p>
-          <VegetableImg {name} {...imageProps} />
+          <VegetableImg {vegetable} />
         </p>
         <h3>
-          {name}
+          {vegetable.name}
         </h3>
         <input
           type="checkbox"
           name="vegetableIds"
-          value={id}
+          value={vegetable.id}
           role="switch"
           bind:group={$form.vegetableIds}
         />

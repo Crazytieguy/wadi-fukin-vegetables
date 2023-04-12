@@ -81,44 +81,29 @@
     </div>
   </artice>
   <section class="flex">
-    {#each data.vegetables as { id, name, unit, pricePerUnit, ...imageProps } (id)}
-      <article class="vegetable" class:editing={$form.replaceId === id}>
+    {#each data.vegetables as vegetable (vegetable.id)}
+      <article class="vegetable" class:editing={$form.replaceId === vegetable.id}>
         <p>
-          <VegetableImg {name} {...imageProps} />
+          <VegetableImg {vegetable} />
         </p>
-        <hgroup>
-          <h3>
-            {#if $form.replaceId === id}
-              {$form.name}
-            {:else}
-              {name}
-            {/if}
-          </h3>
-          <h4>
-            <strong>
-              ₪ {#if $form.replaceId === id}
-                {$form.pricePerUnit}
-              {:else}
-                {pricePerUnit}
-              {/if}
-            </strong>
-            per {#if $form.replaceId === id}
-              {$form.unit}
-            {:else}
-              {unit}
-            {/if}
-          </h4>
-        </hgroup>
-        {#if $form.replaceId === id}
+        {#if $form.replaceId === vegetable.id}
+          <hgroup>
+            <h3>{$form.name}</h3>
+            <h4><strong>₪ {$form.pricePerUnit}</strong> per {$form.unit}</h4>
+          </hgroup>
           <button class="contrast round" on:click|preventDefault={cancel}>✕</button>
         {:else}
+          <hgroup>
+            <h3>{vegetable.name}</h3>
+            <h4><strong>₪ {vegetable.pricePerUnit}</strong> per {vegetable.unit}</h4>
+          </hgroup>
           <button
             class="secondary round"
             on:click|preventDefault={() => {
-              $form.replaceId = id;
-              $form.name = name;
-              $form.unit = unit;
-              $form.pricePerUnit = pricePerUnit;
+              $form.replaceId = vegetable.id;
+              $form.name = vegetable.name;
+              $form.unit = vegetable.unit;
+              $form.pricePerUnit = vegetable.pricePerUnit;
               mainForm.scrollIntoView({ behavior: 'smooth' });
             }}
           >

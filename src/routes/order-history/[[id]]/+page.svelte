@@ -3,7 +3,7 @@
   import { superForm } from 'sveltekit-superforms/client';
 
   export let data;
-  const { form, enhance, constraints, delayed } = superForm(data.form);
+  const { enhance, constraints, delayed } = superForm(data.form);
 
   const vegetableById = new Map(data.vegetables.map((vegetable) => [vegetable.id, vegetable]));
 
@@ -61,7 +61,7 @@
       {#each [...orderVegetables].flatMap(vegIdQuantityToVegQuantity) as [vegetable, quantity]}
         <article class="vegetable">
           <p>
-            <VegetableImg {...vegetable} />
+            <VegetableImg {vegetable} />
           </p>
           <hgroup>
             <h5>

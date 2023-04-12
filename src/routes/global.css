@@ -6,7 +6,8 @@ section.flex {
 }
 .vegetable {
   min-width: 9.5rem;
-  max-width: 14rem;
+  /* 200px is the maximum image size */
+  max-width: min(calc(2 * var(--spacing) + 200px), 50vw);
   flex: 1;
   margin: 0;
   --block-spacing-vertical: var(--spacing);

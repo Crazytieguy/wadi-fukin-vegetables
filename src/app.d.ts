@@ -1,9 +1,8 @@
 /// <reference types="@auth/sveltekit" />
 
-import type { Prisma } from '@prisma/client';
+import type { User } from '@prisma/client';
 import type { Session as CoreSession } from '@auth/core/types';
 
-type User = Prisma.UserGetPayload<{}>;
 type Session = CoreSession & { user?: User };
 
 // See https://kit.svelte.dev/docs/types#app
