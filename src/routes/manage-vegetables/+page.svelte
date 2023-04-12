@@ -80,7 +80,7 @@
       </button>
     </div>
   </artice>
-  <section class="flex">
+  <section class="grid">
     {#each data.vegetables as vegetable (vegetable.id)}
       <article class="vegetable" class:editing={$form.replaceId === vegetable.id}>
         <p>

@@ -30,7 +30,7 @@
 {#if data.lastOrder?.isActive}
   <form method="POST" use:enhance>
     <input type="hidden" name="orderId" bind:value={$form.orderId} {...$constraints.orderId} />
-    <section class="flex">
+    <section class="grid">
       {#each data.lastOrder.orderVegetables as { vegetable, vegetableId } (vegetableId)}
         <article class="vegetable">
           <p>

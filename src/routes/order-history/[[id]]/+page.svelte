@@ -57,7 +57,7 @@
         </h5>
       </hgroup>
     </summary>
-    <section class="flex">
+    <section class="grid">
       {#each [...orderVegetables].flatMap(vegIdQuantityToVegQuantity) as [vegetable, quantity]}
         <article class="vegetable">
           <p>

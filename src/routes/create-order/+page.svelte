@@ -9,7 +9,7 @@
 
 <h1>Create Order</h1>
 <form method="POST" use:enhance>
-  <section class="flex">
+  <section class="grid">
     {#each data.vegetables as vegetable (vegetable.id)}
       <article class="vegetable">
         <p>
