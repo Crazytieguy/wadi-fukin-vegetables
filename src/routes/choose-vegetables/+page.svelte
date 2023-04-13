@@ -1,5 +1,5 @@
 <script lang="ts">
-  import VegetableImg from '$lib/VegetableImg.svelte';
+  import Vegetable from '$lib/Vegetable.svelte';
   import { superForm } from 'sveltekit-superforms/client';
 
   export let data;
@@ -30,30 +30,16 @@
 {#if data.lastOrder?.isActive}
   <form method="POST" use:enhance>
     <input type="hidden" name="orderId" bind:value={$form.orderId} {...$constraints.orderId} />
-    <section class="grid">
+    <section class="vegetable-grid">
       {#each data.lastOrder.orderVegetables as { vegetable, vegetableId } (vegetableId)}
-        <article class="vegetable">
-          <p>
-            <VegetableImg {vegetable} />
-          </p>
-          <hgroup>
-            <h3>
-              {vegetable.name}
-            </h3>
-            <p>
-              <strong>
-                ₪ {vegetable.pricePerUnit}
-              </strong>
-              per {vegetable.unit}
-            </p>
-          </hgroup>
+        <Vegetable {vegetable}>
           <input
             type="number"
             name={vegetableId}
             bind:value={$form[vegetableId]}
             {...notypecheck($constraints)[vegetableId]}
           />
-        </article>
+        </Vegetable>
       {/each}
     </section>
     <h3 class="total">
@@ -75,12 +61,7 @@
   .total {
     text-align: center;
   }
-  h3,
-  p {
-    margin-block: 0.5rem;
-  }
   input[type='number'] {
-    max-width: 6rem;
     margin-bottom: 0;
   }
 </style>

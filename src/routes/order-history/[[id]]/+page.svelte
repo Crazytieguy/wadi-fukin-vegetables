@@ -1,5 +1,5 @@
 <script lang="ts">
-  import VegetableImg from '$lib/VegetableImg.svelte';
+  import Vegetable from '$lib/Vegetable.svelte';
   import { superForm } from 'sveltekit-superforms/client';
 
   export let data;
@@ -34,20 +34,12 @@
   };
 </script>
 
-{#if data.order?.isActive && data.user.isAdmin}
-  <form method="POST" use:enhance>
-    <input type="hidden" name="id" value={data.order.id} {...$constraints.id} />
-    <button class="secondary" aria-busy={$delayed}>Close Active Order</button>
-  </form>
-{/if}
 {#each [...userOrderVegetablesByUser] as [userId, orderVegetables]}
   <details>
     <!-- svelte-ignore a11y-no-redundant-roles -->
     <summary role="button" class="outline">
       <hgroup>
-        <h4>
-          {userNames.get(userId)}
-        </h4>
+        <h4>{userNames.get(userId)}</h4>
         <h5>
           ₪ {[...orderVegetables].reduce(
             (total, [vegetableId, quantity]) =>
@@ -57,30 +49,33 @@
         </h5>
       </hgroup>
     </summary>
-    <section class="grid">
+    <section class="vegetable-grid">
       {#each [...orderVegetables].flatMap(vegIdQuantityToVegQuantity) as [vegetable, quantity]}
-        <article class="vegetable">
-          <p>
-            <VegetableImg {vegetable} />
-          </p>
-          <hgroup>
-            <h5>
-              {vegetable.name}
-            </h5>
-            <h6>
-              {quantity}
-              {vegetable.unit}
-            </h6>
-          </hgroup>
-        </article>
+        <Vegetable {vegetable}>
+          <div slot="subtitle" />
+          <h5>
+            {quantity}
+            {vegetable.unit}
+          </h5>
+        </Vegetable>
       {/each}
     </section>
   </details>
 {/each}
+{#if data.order?.isActive && data.user.isAdmin}
+  <form method="POST" use:enhance>
+    <input type="hidden" name="id" value={data.order.id} {...$constraints.id} />
+    <button class="secondary" aria-busy={$delayed}>Close Active Order</button>
+  </form>
+{/if}
 
 <style>
   h4,
+  h5,
   hgroup {
     margin: 0;
+  }
+  button {
+    width: auto;
   }
 </style>

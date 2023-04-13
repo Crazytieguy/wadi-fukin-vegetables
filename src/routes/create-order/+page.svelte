@@ -1,5 +1,5 @@
 <script lang="ts">
-  import VegetableImg from '$lib/VegetableImg.svelte';
+  import Vegetable from '$lib/Vegetable.svelte';
   import { superForm } from 'sveltekit-superforms/client';
 
   export let data;
@@ -9,15 +9,10 @@
 
 <h1>Create Order</h1>
 <form method="POST" use:enhance>
-  <section class="grid">
+  <section class="vegetable-grid">
     {#each data.vegetables as vegetable (vegetable.id)}
-      <article class="vegetable">
-        <p>
-          <VegetableImg {vegetable} />
-        </p>
-        <h3>
-          {vegetable.name}
-        </h3>
+      <Vegetable {vegetable}>
+        <div slot="subtitle" />
         <input
           type="checkbox"
           name="vegetableIds"
@@ -25,17 +20,13 @@
           role="switch"
           bind:group={$form.vegetableIds}
         />
-      </article>
+      </Vegetable>
     {/each}
   </section>
   <button class="secondary" aria-busy={$delayed}>Create Order</button>
 </form>
 
 <style>
-  h3,
-  p {
-    margin-block: 0.5rem;
-  }
   button {
     width: auto;
     padding-inline: 2rem;

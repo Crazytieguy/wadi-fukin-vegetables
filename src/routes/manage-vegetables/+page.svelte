@@ -1,5 +1,5 @@
 <script lang="ts">
-  import VegetableImg from '$lib/VegetableImg.svelte';
+  import Vegetable from '$lib/Vegetable.svelte';
   import { superForm } from 'sveltekit-superforms/client';
 
   export let data;
@@ -80,23 +80,14 @@
       </button>
     </div>
   </artice>
-  <section class="grid">
+  <section class="vegetable-grid">
     {#each data.vegetables as vegetable (vegetable.id)}
-      <article class="vegetable" class:editing={$form.replaceId === vegetable.id}>
-        <p>
-          <VegetableImg {vegetable} />
-        </p>
-        {#if $form.replaceId === vegetable.id}
-          <hgroup>
-            <h3>{$form.name}</h3>
-            <h4><strong>₪ {$form.pricePerUnit}</strong> per {$form.unit}</h4>
-          </hgroup>
+      {#if $form.replaceId === vegetable.id}
+        <Vegetable vegetable={{ ...vegetable, ...$form }} class="editing">
           <button class="contrast round" on:click|preventDefault={cancel}>✕</button>
-        {:else}
-          <hgroup>
-            <h3>{vegetable.name}</h3>
-            <h4><strong>₪ {vegetable.pricePerUnit}</strong> per {vegetable.unit}</h4>
-          </hgroup>
+        </Vegetable>
+      {:else}
+        <Vegetable {vegetable}>
           <button
             class="secondary round"
             on:click|preventDefault={() => {
@@ -109,8 +100,8 @@
           >
             ✎
           </button>
-        {/if}
-      </article>
+        </Vegetable>
+      {/if}
     {/each}
   </section>
 </form>
@@ -130,16 +121,14 @@
     min-width: 4rem;
     margin-bottom: var(--spacing);
   }
-  .round {
+  button.round {
     border-radius: 50%;
-  }
-  .vegetable button {
     margin-bottom: 0;
   }
   button {
     width: auto;
   }
-  .editing {
+  section :global(.editing) {
     outline: 2px solid var(--form-element-valid-active-border-color);
   }
 </style>

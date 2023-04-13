@@ -1,16 +1,8 @@
-section.grid {
+.vegetable-grid {
   display: grid;
-  gap: 1rem;
+  column-gap: 1rem;
   grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
   justify-items: center;
-}
-.vegetable {
-  /* 200px is the maximum image size */
-  max-width: calc(2 * var(--spacing) + 200px);
-  margin: 0;
-  --block-spacing-vertical: var(--spacing);
-  --block-spacing-horizontal: var(--spacing);
-  border-radius: 0.5rem;
 }
 @media not (min-width: 992px) {
   .desktop {
