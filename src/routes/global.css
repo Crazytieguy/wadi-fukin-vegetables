@@ -4,13 +4,3 @@
   grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
   justify-items: center;
 }
-@media not (min-width: 992px) {
-  .desktop {
-    display: none;
-  }
-}
-@media (min-width: 992px) {
-  .mobile {
-    display: none;
-  }
-}

@@ -56,4 +56,14 @@
     max-width: 45rem;
     margin-inline: auto;
   }
+  @media not (min-width: 992px) {
+    .desktop {
+      display: none;
+    }
+  }
+  @media (min-width: 992px) {
+    .mobile {
+      display: none;
+    }
+  }
 </style>
