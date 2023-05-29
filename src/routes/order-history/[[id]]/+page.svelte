@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Vegetable from '$lib/Vegetable.svelte';
   import { superForm } from 'sveltekit-superforms/client';
 
   export let data;
@@ -14,7 +13,6 @@
   $: {
     userOrderVegetablesByUser = new Map();
     const totalOrderVegetables = new Map();
-    userOrderVegetablesByUser.set('total', totalOrderVegetables);
     (data.order?.userOrderVegetables || [])
       .filter(({ quantity }) => quantity > 0)
       .forEach(({ userId, vegetableId, quantity }) => {
@@ -25,6 +23,7 @@
         const accumulatedTotalQuantity = totalOrderVegetables.get(vegetableId) || 0;
         totalOrderVegetables.set(vegetableId, accumulatedTotalQuantity + quantity);
       });
+    userOrderVegetablesByUser.set('total', totalOrderVegetables);
   }
 
   let vegIdQuantityToVegQuantity = ([vegetableId, quantity]: [string, number]) => {
@@ -34,32 +33,59 @@
   };
 </script>
 
-{#each [...userOrderVegetablesByUser] as [userId, orderVegetables]}
-  <details>
-    <!-- svelte-ignore a11y-no-redundant-roles -->
-    <summary role="button" class="outline">
-      <hgroup>
-        <h4>{userNames.get(userId)}</h4>
-        <h5>
+<h2>User Totals</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    {#each [...userOrderVegetablesByUser] as [userId, orderVegetables]}
+      <tr>
+        <td>
+          {userNames.get(userId)}
+        </td>
+        <td>
           ₪ {[...orderVegetables].reduce(
             (total, [vegetableId, quantity]) =>
               total + (vegetableById.get(vegetableId)?.pricePerUnit || 0) * quantity,
             0
           )}
-        </h5>
-      </hgroup>
+        </td>
+      </tr>
+    {/each}
+  </tbody>
+</table>
+
+<h2>Order Details</h2>
+
+{#each [...userOrderVegetablesByUser] as [userId, orderVegetables]}
+  <details>
+    <summary>
+      {userNames.get(userId)}
     </summary>
-    <section class="vegetable-grid">
-      {#each [...orderVegetables].flatMap(vegIdQuantityToVegQuantity) as [vegetable, quantity]}
-        <Vegetable {vegetable}>
-          <div slot="subtitle" />
-          <h5>
-            {quantity}
-            {vegetable.unit}
-          </h5>
-        </Vegetable>
-      {/each}
-    </section>
+    <table>
+      <thead>
+        <tr>
+          <th>Vegetable</th>
+          <th>Quantity</th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each [...orderVegetables].flatMap(vegIdQuantityToVegQuantity) as [vegetable, quantity]}
+          <tr>
+            <td>{vegetable.name}</td>
+            <td>
+              {quantity}
+              {vegetable.unit}
+            </td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
   </details>
 {/each}
 {#if data.order?.isActive && data.user.isAdmin}
@@ -70,11 +96,6 @@
 {/if}
 
 <style>
-  h4,
-  h5,
-  hgroup {
-    margin: 0;
-  }
   button {
     width: auto;
   }
