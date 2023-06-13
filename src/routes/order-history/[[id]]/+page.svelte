@@ -45,7 +45,7 @@
   <tbody>
     {#each [...userOrderVegetablesByUser] as [userId, orderVegetables]}
       <tr>
-        <td>
+        <td class="capitalize">
           {userNames.get(userId)}
         </td>
         <td>
@@ -101,6 +101,9 @@
   }
   summary {
     font-weight: bold;
+    text-transform: capitalize;
+  }
+  .capitalize {
     text-transform: capitalize;
   }
   table {
