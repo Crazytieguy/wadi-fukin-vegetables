@@ -99,4 +99,14 @@
   button {
     width: auto;
   }
+  summary {
+    font-weight: bold;
+    text-transform: capitalize;
+  }
+  table {
+    table-layout: fixed;
+  }
+  thead th:first-child {
+    width: 60%;
+  }
 </style>
