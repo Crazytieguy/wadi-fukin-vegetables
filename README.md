@@ -1,3 +1,3 @@
 # Wadi Fukin Vegetables
 
-A web application for vegetable group orders from Wadi Fukin.
+A production web application for vegetable group orders from Wadi Fukin.
