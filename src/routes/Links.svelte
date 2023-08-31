@@ -5,7 +5,7 @@
   const links = [
     { href: '/', label: 'Home' },
     { href: '/choose-vegetables', label: 'Choose Vegetables' },
-    { href: '/order-history', label: 'Order History' },
+    { href: '/order-history', label: 'Order History', adminOnly: true },
     { href: '/manage-vegetables', label: 'Manage Vegetables', adminOnly: true },
     { href: '/create-order', label: 'Create Order', adminOnly: true }
   ];

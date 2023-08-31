@@ -23,7 +23,7 @@ export const actions = {
 };
 
 export const load = async ({ request, locals, params }) => {
-  await locals.requireLogin();
+  await locals.requireAdmin();
   const order = params.id
     ? prisma.order.findUnique({
         where: { id: params.id },
