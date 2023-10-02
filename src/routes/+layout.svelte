@@ -15,6 +15,7 @@
 <svelte:head>
   <title>Wadi Fukin Vegetables</title>
   <meta name="description" content="an application for vegetable group orders from Wadi Fukin." />
+  <meta name="google-site-verification" content="wF6kbeBwIbxikrdrqhgVSx5ymzkyUNmJoJ7aZoFAuOc" />
 </svelte:head>
 <div class="app">
   <header>
