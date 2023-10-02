@@ -1,7 +1,7 @@
 import { prisma } from '$lib/server/prismaClient';
-import { z } from 'zod';
-import { superValidate } from 'sveltekit-superforms/server';
 import { error, fail, redirect } from '@sveltejs/kit';
+import { superValidate } from 'sveltekit-superforms/server';
+import { z } from 'zod';
 
 const closeOrderSchema = z.object({
   id: z.string()
@@ -23,7 +23,7 @@ export const actions = {
 };
 
 export const load = async ({ request, locals, params }) => {
-  await locals.requireAdmin();
+  await locals.requireLogin();
   const order = params.id
     ? prisma.order.findUnique({
         where: { id: params.id },

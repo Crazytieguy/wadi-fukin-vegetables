@@ -1,21 +1,15 @@
 <script lang="ts">
-  import type { PageData } from './$types';
   import '@picocss/pico';
-  import './global.css';
   import Links from './Links.svelte';
-  import { afterNavigate } from '$app/navigation';
+  import './global.css';
 
-  export let data: PageData;
+  export let data;
 
   let [authHref, authText] = data.session
     ? ['/auth/signout', 'Sign out']
     : ['/auth/signin', 'Sign in'];
 
   let isAdmin = data.session?.user?.isAdmin;
-
-  let detailsOpen = false;
-
-  afterNavigate(() => (detailsOpen = false));
 </script>
 
 <svelte:head>
@@ -25,18 +19,7 @@
 <div class="app">
   <header>
     <nav>
-      <ul class="mobile">
-        <li>
-          <details role="list" bind:open={detailsOpen}>
-            <summary aria-haspopup="listbox">Menu</summary>
-            <!-- svelte-ignore a11y-no-noninteractive-element-to-interactive-role -->
-            <ul role="listbox">
-              <Links {isAdmin} />
-            </ul>
-          </details>
-        </li>
-      </ul>
-      <ul class="desktop">
+      <ul>
         <Links {isAdmin} />
       </ul>
       <ul>
@@ -55,15 +38,5 @@
   .app {
     max-width: 45rem;
     margin-inline: auto;
-  }
-  @media not (min-width: 992px) {
-    .desktop {
-      display: none;
-    }
-  }
-  @media (min-width: 992px) {
-    .mobile {
-      display: none;
-    }
   }
 </style>

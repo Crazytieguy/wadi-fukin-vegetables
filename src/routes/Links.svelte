@@ -1,25 +1,34 @@
 <script lang="ts">
-  import { page } from '$app/stores';
+  import { afterNavigate } from '$app/navigation';
+  import Link from './Link.svelte';
 
   export let isAdmin: boolean | undefined;
-  const links = [
-    { href: '/', label: 'Home' },
-    { href: '/choose-vegetables', label: 'Choose Vegetables' },
-    { href: '/order-history', label: 'Order History', adminOnly: true },
-    { href: '/manage-vegetables', label: 'Manage Vegetables', adminOnly: true },
-    { href: '/create-order', label: 'Create Order', adminOnly: true },
-    { href: '/manage-admins', label: 'Manage Admins', adminOnly: true }
+  const publicLinks = [
+    { href: '/', label: 'Choose Vegetables' },
+    { href: '/order-history', label: 'Order History' }
   ];
+  const adminLinks = [
+    { href: '/manage-vegetables', label: 'Manage Vegetables' },
+    { href: '/create-order', label: 'Create Order' },
+    { href: '/manage-admins', label: 'Manage Admins' }
+  ];
+
+  let detailsOpen = false;
+
+  afterNavigate(() => (detailsOpen = false));
 </script>
 
-{#each links as link}
-  {#if !link.adminOnly || isAdmin}
-    <li>
-      {#if link.href == $page.url.pathname}
-        {link.label}
-      {:else}
-        <a href={link.href}>{link.label}</a>
-      {/if}
-    </li>
-  {/if}
+{#each publicLinks as link}
+  <Link {...link} />
 {/each}
+{#if isAdmin}
+  <li role="list">
+    <!-- svelte-ignore a11y-invalid-attribute -->
+    <a href="#" aria-haspopup="listbox">Admin</a>
+    <ul role="listbox">
+      {#each adminLinks as link}
+        <Link {...link} />
+      {/each}
+    </ul>
+  </li>
+{/if}
