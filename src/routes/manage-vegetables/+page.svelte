@@ -22,6 +22,7 @@
     $form.name = '';
     $form.unit = 'Kg';
     $form.pricePerUnit = 0;
+    $form.sellerName = '';
   };
 </script>
 
@@ -57,16 +58,25 @@
         />
       </label>
       <label>
-        <p>Image:</p>
+        <p>Seller:</p>
         <input
-          bind:this={fileInput}
-          type="file"
-          accept="image/*"
-          name="image"
-          required={!$form.replaceId}
+          type="text"
+          name="sellerName"
+          bind:value={$form.sellerName}
+          {...$constraints.sellerName}
         />
       </label>
     </div>
+    <label>
+      <p>Image:</p>
+      <input
+        bind:this={fileInput}
+        type="file"
+        accept="image/*"
+        name="image"
+        required={!$form.replaceId}
+      />
+    </label>
     <div class="buttons">
       {#if $form.replaceId}
         <button class="contrast" on:click|preventDefault={cancel}>Cancel</button>

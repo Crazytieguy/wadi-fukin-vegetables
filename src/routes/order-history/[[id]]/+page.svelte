@@ -10,6 +10,7 @@
   userNames.set('total', 'Total');
 
   let userOrderVegetablesByUser: Map<string, Map<string, number>>;
+  let sellerTotals: Map<string, number>;
   $: {
     userOrderVegetablesByUser = new Map();
     const totalOrderVegetables = new Map();
@@ -24,6 +25,15 @@
         totalOrderVegetables.set(vegetableId, accumulatedTotalQuantity + quantity);
       });
     userOrderVegetablesByUser.set('total', totalOrderVegetables);
+    sellerTotals = new Map();
+    totalOrderVegetables.forEach((quantity, vegetableId) => {
+      const vegetable = vegetableById.get(vegetableId);
+      if (!vegetable) return;
+      const sellerName = vegetable.sellerName || 'Unknown';
+      const accumulatedSellerTotal = sellerTotals.get(sellerName) || 0;
+      const toAdd = vegetable.pricePerUnit * quantity;
+      sellerTotals.set(sellerName, accumulatedSellerTotal + toAdd);
+    });
   }
 
   let vegIdQuantityToVegQuantity = ([vegetableId, quantity]: [string, number]) => {
@@ -54,6 +64,29 @@
               total + (vegetableById.get(vegetableId)?.pricePerUnit || 0) * quantity,
             0
           )}
+        </td>
+      </tr>
+    {/each}
+  </tbody>
+</table>
+
+<h2>Seller Totals</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Seller</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    {#each [...sellerTotals] as [sellerName, total]}
+      <tr>
+        <td class="capitalize">
+          {sellerName}
+        </td>
+        <td>
+          ₪ {total}
         </td>
       </tr>
     {/each}

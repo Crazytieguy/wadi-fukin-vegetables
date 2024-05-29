@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fill } from '@cloudinary/url-gen/actions/resize';
-  import { cld } from './cloudinaryClient';
   import type { Vegetable } from '@prisma/client';
+  import { cld } from './cloudinaryClient';
 
   export let vegetable: Vegetable;
   $: ({ name, imagePublicId, imageOriginalWidth, imageOriginalHeight } = vegetable);
@@ -17,6 +17,9 @@
   </header>
   <hgroup>
     <h4>{vegetable.name}</h4>
+    {#if vegetable.sellerName}
+      <h5>{vegetable.sellerName}</h5>
+    {/if}
     <h5>
       <slot name="subtitle">
         <strong>₪ {vegetable.pricePerUnit}</strong> per {vegetable.unit}

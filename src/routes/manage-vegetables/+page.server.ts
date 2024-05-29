@@ -1,14 +1,15 @@
 import { prisma } from '$lib/server/prismaClient';
-import { z } from 'zod';
-import { superValidate } from 'sveltekit-superforms/server';
 import { fail } from '@sveltejs/kit';
 import { v2 as cloudinary } from 'cloudinary';
+import { superValidate } from 'sveltekit-superforms/server';
+import { z } from 'zod';
 
 const createVegetableSchema = z.object({
   replaceId: z.string().optional(),
   name: z.string(),
   unit: z.enum(['Kg', 'G', 'Unit']),
-  pricePerUnit: z.number().multipleOf(0.01).positive()
+  pricePerUnit: z.number().multipleOf(0.01).positive(),
+  sellerName: z.string()
 });
 
 const uploadFile = async (image: File) => {
