@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { groupBy, reduceBy } from '$lib/utils.js';
   import { superForm } from 'sveltekit-superforms/client';
 
   export let data;
@@ -9,38 +10,53 @@
   const userNames = new Map(data.users.map((user) => [user.id, user.name]));
   userNames.set('total', 'Total');
 
-  let userOrderVegetablesByUser: Map<string, Map<string, number>>;
-  let sellerTotals: Map<string, number>;
-  $: {
-    userOrderVegetablesByUser = new Map();
-    const totalOrderVegetables = new Map();
-    (data.order?.userOrderVegetables || [])
-      .filter(({ quantity }) => quantity > 0)
-      .forEach(({ userId, vegetableId, quantity }) => {
-        const orderVegetables = userOrderVegetablesByUser.get(userId) || new Map();
-        const accumulatedQuantity = orderVegetables.get(vegetableId) || 0;
-        orderVegetables.set(vegetableId, accumulatedQuantity + quantity);
-        userOrderVegetablesByUser.set(userId, orderVegetables);
-        const accumulatedTotalQuantity = totalOrderVegetables.get(vegetableId) || 0;
-        totalOrderVegetables.set(vegetableId, accumulatedTotalQuantity + quantity);
-      });
-    userOrderVegetablesByUser.set('total', totalOrderVegetables);
-    sellerTotals = new Map();
-    totalOrderVegetables.forEach((quantity, vegetableId) => {
-      const vegetable = vegetableById.get(vegetableId);
-      if (!vegetable) return;
-      const sellerName = vegetable.sellerName || 'Unknown';
-      const accumulatedSellerTotal = sellerTotals.get(sellerName) || 0;
-      const toAdd = vegetable.pricePerUnit * quantity;
-      sellerTotals.set(sellerName, accumulatedSellerTotal + toAdd);
-    });
-  }
-
-  let vegIdQuantityToVegQuantity = ([vegetableId, quantity]: [string, number]) => {
-    let veg = vegetableById.get(vegetableId);
-    if (!veg) return [];
-    return [[veg, quantity]] as const;
+  const priceReducer = (
+    acc: number,
+    { vegetableId, quantity }: { vegetableId: string; quantity: number }
+  ) => {
+    const vegetable = vegetableById.get(vegetableId);
+    if (!vegetable) return 0;
+    return acc + vegetable.pricePerUnit * quantity;
   };
+
+  const sellerByVegId = ({ vegetableId }: { vegetableId: string }) =>
+    vegetableById.get(vegetableId)?.sellerName || 'Unknown';
+
+  const orderVegetablesToVegQuantities = (
+    orderVegetables: {
+      vegetableId: string;
+      quantity: number;
+    }[]
+  ) => {
+    return [...groupBy(orderVegetables, ({ vegetableId }) => vegetableId)].flatMap(
+      ([vegetableId, orderVegetables]) => {
+        const vegetable = vegetableById.get(vegetableId);
+        if (!vegetable) return [];
+        const quantity = orderVegetables.reduce((acc, { quantity }) => acc + quantity, 0);
+        if (quantity === 0) return [];
+        return [[vegetable, quantity]] as const;
+      }
+    );
+  };
+
+  $: userOrderVegetables = (data.order?.userOrderVegetables || []).filter(
+    ({ quantity }) => quantity > 0
+  );
+
+  $: userTotals = reduceBy(userOrderVegetables, ({ userId }) => userId, priceReducer, 0);
+  $: userTotals.set('total', userOrderVegetables.reduce(priceReducer, 0));
+
+  $: sellerTotals = reduceBy(userOrderVegetables, sellerByVegId, priceReducer, 0);
+
+  $: userSellerOrderVegetables = new Map(
+    [...groupBy(userOrderVegetables, ({ userId }) => userId)].map(
+      ([userId, userOrderVegetables]) => {
+        return [userId, groupBy(userOrderVegetables, sellerByVegId)];
+      }
+    )
+  );
+  $: userSellerOrderVegetables.set('total', groupBy(userOrderVegetables, sellerByVegId));
+  $: console.log({ userSellerOrderVegetables });
 </script>
 
 <h2>User Totals</h2>
@@ -53,17 +69,13 @@
     </tr>
   </thead>
   <tbody>
-    {#each [...userOrderVegetablesByUser] as [userId, orderVegetables]}
+    {#each [...userTotals] as [userId, total] (userId)}
       <tr>
         <td class="capitalize">
           {userNames.get(userId)}
         </td>
         <td>
-          ₪ {[...orderVegetables].reduce(
-            (total, [vegetableId, quantity]) =>
-              total + (vegetableById.get(vegetableId)?.pricePerUnit || 0) * quantity,
-            0
-          )}
+          ₪ {total}
         </td>
       </tr>
     {/each}
@@ -80,9 +92,9 @@
     </tr>
   </thead>
   <tbody>
-    {#each [...sellerTotals] as [sellerName, total]}
+    {#each [...sellerTotals] as [sellerName, total] (sellerName)}
       <tr>
-        <td class="capitalize">
+        <td>
           {sellerName}
         </td>
         <td>
@@ -95,7 +107,7 @@
 
 <h2>Order Details</h2>
 
-{#each [...userOrderVegetablesByUser] as [userId, orderVegetables]}
+{#each [...userSellerOrderVegetables] as [userId, sellerOrderVegetables] (userId)}
   <details>
     <summary>
       {userNames.get(userId)}
@@ -108,14 +120,21 @@
         </tr>
       </thead>
       <tbody>
-        {#each [...orderVegetables].flatMap(vegIdQuantityToVegQuantity) as [vegetable, quantity]}
+        {#each [...sellerOrderVegetables] as [sellerName, orderVegetables] (sellerName)}
           <tr>
-            <td>{vegetable.name}</td>
-            <td>
-              {quantity}
-              {vegetable.unit}
+            <td colspan="2">
+              <strong>{sellerName}</strong>
             </td>
           </tr>
+          {#each orderVegetablesToVegQuantities(orderVegetables) as [vegetable, quantity] (vegetable.id)}
+            <tr>
+              <td>{vegetable.name}</td>
+              <td>
+                {quantity}
+                {vegetable.unit}
+              </td>
+            </tr>
+          {/each}
         {/each}
       </tbody>
     </table>
@@ -144,5 +163,9 @@
   }
   thead th:first-child {
     width: 60%;
+  }
+
+  td[colspan='2'] {
+    text-align: center;
   }
 </style>
