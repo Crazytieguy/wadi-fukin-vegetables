@@ -9,7 +9,8 @@ const createVegetableSchema = z.object({
   name: z.string(),
   unit: z.enum(['Kg', 'G', 'Unit']),
   pricePerUnit: z.number().multipleOf(0.01).positive(),
-  sellerName: z.string()
+  sellerName: z.string(),
+  category: z.string()
 });
 
 const uploadFile = async (image: File) => {

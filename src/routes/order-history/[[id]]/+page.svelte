@@ -56,7 +56,6 @@
     )
   );
   $: userSellerOrderVegetables.set('total', groupBy(userOrderVegetables, sellerByVegId));
-  $: console.log({ userSellerOrderVegetables });
 </script>
 
 <h2>User Totals</h2>

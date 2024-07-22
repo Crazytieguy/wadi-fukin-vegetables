@@ -16,6 +16,19 @@
     (total, { vegetable }) => total + vegetable.pricePerUnit * $form[vegetable.id],
     0
   );
+  $: orderVegetablesByCategory = data.lastOrder?.isActive
+    ? data.lastOrder.orderVegetables.reduce(
+        (
+          categories: Record<string, (typeof data.lastOrder.orderVegetables)[number][]>,
+          orderVegetable
+        ) => {
+          const category = orderVegetable.vegetable.category || 'No Category';
+          (categories[category] = categories[category] || []).push(orderVegetable);
+          return categories;
+        },
+        {}
+      )
+    : {};
 
   const notypecheck = (x: any) => x;
 </script>
@@ -31,18 +44,23 @@
 {#if data.lastOrder?.isActive}
   <form method="POST" use:enhance>
     <input type="hidden" name="orderId" bind:value={$form.orderId} {...$constraints.orderId} />
-    <section class="vegetable-grid">
-      {#each data.lastOrder.orderVegetables as { vegetable, vegetableId } (vegetableId)}
-        <Vegetable {vegetable}>
-          <input
-            type="number"
-            name={vegetableId}
-            bind:value={$form[vegetableId]}
-            {...notypecheck($constraints)[vegetableId]}
-          />
-        </Vegetable>
-      {/each}
-    </section>
+    {#each Object.entries(orderVegetablesByCategory) as [category, orderVegetables] (category)}
+      <details open={category === 'No Category'}>
+        <summary>{category}</summary>
+        <section class="vegetable-grid">
+          {#each orderVegetables as { vegetable, vegetableId } (vegetableId)}
+            <Vegetable {vegetable}>
+              <input
+                type="number"
+                name={vegetableId}
+                bind:value={$form[vegetableId]}
+                {...notypecheck($constraints)[vegetableId]}
+              />
+            </Vegetable>
+          {/each}
+        </section>
+      </details>
+    {/each}
     <h3 class="total">
       Total ₪ {total?.toFixed(2)}
     </h3>
@@ -64,5 +82,8 @@
   }
   input[type='number'] {
     margin-bottom: 0;
+  }
+  summary {
+    font-size: 1.5rem;
   }
 </style>

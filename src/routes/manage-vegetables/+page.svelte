@@ -23,6 +23,7 @@
     $form.unit = 'Kg';
     $form.pricePerUnit = 0;
     $form.sellerName = '';
+    $form.category = '';
   };
 </script>
 
@@ -67,16 +68,22 @@
         />
       </label>
     </div>
-    <label>
-      <p>Image:</p>
-      <input
-        bind:this={fileInput}
-        type="file"
-        accept="image/*"
-        name="image"
-        required={!$form.replaceId}
-      />
-    </label>
+    <div class="grid">
+      <label>
+        <p>Category:</p>
+        <input type="text" name="category" bind:value={$form.category} {...$constraints.category} />
+      </label>
+      <label>
+        <p>Image:</p>
+        <input
+          bind:this={fileInput}
+          type="file"
+          accept="image/*"
+          name="image"
+          required={!$form.replaceId}
+        />
+      </label>
+    </div>
     <div class="buttons">
       {#if $form.replaceId}
         <button class="contrast" on:click|preventDefault={cancel}>Cancel</button>
@@ -128,7 +135,7 @@
     align-items: center;
   }
   label p {
-    min-width: 4rem;
+    min-width: 4.5rem;
     margin-bottom: var(--spacing);
   }
   button.round {

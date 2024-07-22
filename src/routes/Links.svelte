@@ -10,7 +10,8 @@
   const adminLinks = [
     { href: '/manage-vegetables', label: 'Manage Vegetables' },
     { href: '/create-order', label: 'Create Order' },
-    { href: '/manage-admins', label: 'Manage Admins' }
+    { href: '/manage-admins', label: 'Manage Admins' },
+    { href: '/manage-categories', label: 'Manage Categories' }
   ];
 
   let detailsOpen = false;
