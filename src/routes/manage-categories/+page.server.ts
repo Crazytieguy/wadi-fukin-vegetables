@@ -23,7 +23,7 @@ export const actions = {
       if (category) {
         await prisma.vegetable.update({
           where: { id },
-          data: { category }
+          data: { category: category.trim() }
         });
       }
     }

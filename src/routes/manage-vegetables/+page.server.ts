@@ -35,6 +35,9 @@ export const actions = {
       return fail(400, { form });
     }
     const { replaceId, ...data } = form.data;
+    data.sellerName = data.sellerName.trim();
+    data.name = data.name.trim();
+    data.category = data.category.trim();
     const oldVegetable = replaceId
       ? await prisma.vegetable.update({
           where: { id: replaceId },
