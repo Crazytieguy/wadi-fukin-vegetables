@@ -1,5 +1,6 @@
 <script lang="ts">
   import Vegetable from '$lib/Vegetable.svelte';
+  import Fuse from 'fuse.js';
   import { superForm } from 'sveltekit-superforms/client';
 
   export let data;
@@ -25,6 +26,14 @@
     $form.sellerName = '';
     $form.category = '';
   };
+
+  const fuse = new Fuse(data.vegetables, {
+    keys: ['name', 'sellerName', 'category']
+  });
+
+  let search = '';
+
+  $: vegetables = search ? fuse.search(search).map((result) => result.item) : data.vegetables;
 </script>
 
 <h1>Manage Vegetables</h1>
@@ -97,31 +106,37 @@
       </button>
     </div>
   </artice>
-  <section class="vegetable-grid">
-    {#each data.vegetables as vegetable (vegetable.id)}
-      {#if $form.replaceId === vegetable.id}
-        <Vegetable vegetable={{ ...vegetable, ...$form }} class="editing">
-          <button class="contrast round" on:click|preventDefault={cancel}>✕</button>
-        </Vegetable>
-      {:else}
-        <Vegetable {vegetable}>
-          <button
-            class="secondary round"
-            on:click|preventDefault={() => {
-              $form.replaceId = vegetable.id;
-              $form.name = vegetable.name;
-              $form.unit = vegetable.unit;
-              $form.pricePerUnit = vegetable.pricePerUnit;
-              mainForm.scrollIntoView({ behavior: 'smooth' });
-            }}
-          >
-            ✎
-          </button>
-        </Vegetable>
-      {/if}
-    {/each}
-  </section>
 </form>
+<search>
+  <label>
+    <p>Search:</p>
+    <input type="text" bind:value={search} />
+  </label>
+</search>
+<section class="vegetable-grid">
+  {#each vegetables as vegetable (vegetable.id)}
+    {#if $form.replaceId === vegetable.id}
+      <Vegetable vegetable={{ ...vegetable, ...$form }} class="editing">
+        <button class="contrast round" on:click|preventDefault={cancel}>✕</button>
+      </Vegetable>
+    {:else}
+      <Vegetable {vegetable}>
+        <button
+          class="secondary round"
+          on:click|preventDefault={() => {
+            $form.replaceId = vegetable.id;
+            $form.name = vegetable.name;
+            $form.unit = vegetable.unit;
+            $form.pricePerUnit = vegetable.pricePerUnit;
+            mainForm.scrollIntoView({ behavior: 'smooth' });
+          }}
+        >
+          ✎
+        </button>
+      </Vegetable>
+    {/if}
+  {/each}
+</section>
 
 <style>
   .buttons {

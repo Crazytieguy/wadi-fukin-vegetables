@@ -39,6 +39,7 @@
     "@picocss/pico": "^1.5.8",
     "@prisma/client": "^5.0.0",
     "cloudinary": "^1.35.0",
+    "fuse.js": "^7.0.0",
     "zod": "^3.21.4"
   }
 }
