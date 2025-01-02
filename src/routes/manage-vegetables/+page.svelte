@@ -27,7 +27,7 @@
     $form.category = '';
   };
 
-  const fuse = new Fuse(data.vegetables, {
+  $: fuse = new Fuse(data.vegetables, {
     keys: ['name', 'sellerName', 'category']
   });
 
