@@ -13,6 +13,10 @@ const createVegetableSchema = z.object({
   category: z.string()
 });
 
+const deleteVegetablesSchema = z.object({
+  vegetableIds: z.array(z.string())
+});
+
 const uploadFile = async (image: File) => {
   const imageBuffer = Buffer.from(await image.arrayBuffer());
   const dataUrl = `data:${image.type};base64,${imageBuffer.toString('base64')}`;
@@ -27,13 +31,14 @@ const uploadFile = async (image: File) => {
 };
 
 export const actions = {
-  default: async ({ request, locals }) => {
+  create: async ({ request, locals }) => {
     await locals.requireAdmin();
     const formData = await request.formData();
     const form = await superValidate(formData, createVegetableSchema);
     if (!form.valid) {
       return fail(400, { form });
     }
+
     const { replaceId, ...data } = form.data;
     data.sellerName = data.sellerName.trim();
     data.name = data.name.trim();
@@ -65,17 +70,49 @@ export const actions = {
       }
     });
     return { form };
+  },
+
+  delete: async ({ request, locals }) => {
+    await locals.requireAdmin();
+
+    const deleteForm = await superValidate(request, deleteVegetablesSchema, { id: 'delete' });
+
+    if (!deleteForm.valid) {
+      return fail(400, { deleteForm });
+    }
+
+    const { vegetableIds } = deleteForm.data;
+
+    if (vegetableIds.length === 0) {
+      return fail(400, { deleteForm, error: 'No vegetables selected' });
+    }
+
+    await prisma.vegetable.updateMany({
+      where: {
+        id: {
+          in: vegetableIds
+        }
+      },
+      data: {
+        hidden: true
+      }
+    });
+
+    return { deleteForm };
   }
 };
 
 export const load = async (event) => {
   const form = superValidate(event, createVegetableSchema);
+  const deleteForm = superValidate(event, deleteVegetablesSchema, { id: 'delete' });
+
   return {
     ...(await event.locals.requireAdmin()),
     vegetables: prisma.vegetable.findMany({
       where: { hidden: false },
       orderBy: { createdAt: 'asc' }
     }),
-    form
+    form,
+    deleteForm
   };
 };
