@@ -36,8 +36,24 @@ export const load = async ({ request, locals }) => {
   if (mostRecentOrder?.isActive) {
     throw redirect(303, '/order-history');
   }
-  const defaultVegetables =
+  let defaultVegetables =
     mostRecentOrder?.orderVegetables.map(({ vegetableId }) => vegetableId) || [];
+  
+  if (mostRecentOrder) {
+    const recentlyUpdatedVegetables = await prisma.vegetable.findMany({
+      where: {
+        hidden: false,
+        updatedAt: {
+          gt: mostRecentOrder.createdAt
+        }
+      },
+      select: { id: true }
+    });
+    
+    const recentlyUpdatedIds = recentlyUpdatedVegetables.map(v => v.id);
+    defaultVegetables = [...new Set([...defaultVegetables, ...recentlyUpdatedIds])];
+  }
+  
   const createOrderSchemaWithDefault = z.object({
     vegetableIds: createOrderSchema.shape.vegetableIds.default(
       defaultVegetables as [string, ...string[]]
