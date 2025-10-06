@@ -71,6 +71,6 @@ export const actions = {
       });
     });
     await Promise.all(promises);
-    throw redirect(303, '/submitted');
+    redirect(303, '/submitted');
   }
 };

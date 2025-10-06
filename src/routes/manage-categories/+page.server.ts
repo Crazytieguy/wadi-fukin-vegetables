@@ -39,6 +39,6 @@ export const load = async ({ locals }) => {
   });
   return {
     vegetables,
-    form: superValidate({ categories: vegetables }, updateCategoriesSchema)
+    form: await superValidate({ categories: vegetables }, updateCategoriesSchema)
   };
 };

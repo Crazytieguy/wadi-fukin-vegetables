@@ -23,7 +23,7 @@ export const actions = {
         }
       }
     });
-    throw redirect(303, '/submitted');
+    redirect(303, '/submitted');
   }
 };
 
@@ -34,7 +34,7 @@ export const load = async ({ request, locals }) => {
     include: { orderVegetables: true }
   });
   if (mostRecentOrder?.isActive) {
-    throw redirect(303, '/order-history');
+    redirect(303, '/order-history');
   }
   let defaultVegetables =
     mostRecentOrder?.orderVegetables.map(({ vegetableId }) => vegetableId) || [];
@@ -59,12 +59,17 @@ export const load = async ({ request, locals }) => {
       defaultVegetables as [string, ...string[]]
     )
   });
-  return {
-    ...requireAdmin,
-    vegetables: prisma.vegetable.findMany({
+  const [vegetables, form] = await Promise.all([
+    prisma.vegetable.findMany({
       where: { hidden: false }
     }),
+    superValidate(request, createOrderSchemaWithDefault)
+  ]);
+
+  return {
+    ...requireAdmin,
+    vegetables,
     mostRecentOrder,
-    form: superValidate(request, createOrderSchemaWithDefault)
+    form
   };
 };
