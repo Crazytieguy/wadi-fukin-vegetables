@@ -6,6 +6,14 @@
     (sum, { vegetable, quantity }) => sum + vegetable.pricePerUnit * quantity,
     0
   );
+  $: itemsByCategory = orderedItems.reduce(
+    (categories: Record<string, typeof orderedItems>, item) => {
+      const category = item.vegetable.category || 'No Category';
+      (categories[category] = categories[category] || []).push(item);
+      return categories;
+    },
+    {}
+  );
 </script>
 
 <h1>Order Submitted Successfully!</h1>
@@ -13,32 +21,28 @@
 {#if orderedItems.length > 0}
   <article>
     <h2>Your Order Summary</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Item</th>
-          <th>Quantity</th>
-          <th>Price per {orderedItems[0].vegetable.unit}</th>
-          <th>Subtotal</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each orderedItems as { vegetable, quantity }}
+    {#each Object.entries(itemsByCategory) as [category, items]}
+      <h3>{category}</h3>
+      <table>
+        <thead>
           <tr>
-            <td>{vegetable.name}</td>
-            <td>{quantity} {vegetable.unit}</td>
-            <td>₪{vegetable.pricePerUnit.toFixed(2)}</td>
-            <td>₪{(vegetable.pricePerUnit * quantity).toFixed(2)}</td>
+            <th>Item</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
           </tr>
-        {/each}
-      </tbody>
-      <tfoot>
-        <tr>
-          <th colspan="3">Total</th>
-          <th>₪{total.toFixed(2)}</th>
-        </tr>
-      </tfoot>
-    </table>
+        </thead>
+        <tbody>
+          {#each items as { vegetable, quantity }}
+            <tr>
+              <td>{vegetable.name}</td>
+              <td>{quantity} {vegetable.unit}</td>
+              <td>₪{(vegetable.pricePerUnit * quantity).toFixed(2)}</td>
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    {/each}
+    <h3>Total: ₪{total.toFixed(2)}</h3>
   </article>
 
   <p>
@@ -50,18 +54,3 @@
     <a href="/" role="button">Go to Order Page</a>
   </p>
 {/if}
-
-<style>
-  table {
-    width: 100%;
-  }
-  tfoot th {
-    text-align: right;
-  }
-  tbody td:nth-child(2),
-  tbody td:nth-child(3),
-  tbody td:nth-child(4),
-  tfoot th {
-    text-align: right;
-  }
-</style>
