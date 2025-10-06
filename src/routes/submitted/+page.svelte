@@ -21,17 +21,19 @@
 {#if orderedItems.length > 0}
   <article>
     <h2>Your Order Summary</h2>
-    {#each Object.entries(itemsByCategory) as [category, items]}
-      <h3>{category}</h3>
-      <table>
-        <thead>
+    <table>
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Quantity</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each Object.entries(itemsByCategory) as [category, items]}
           <tr>
-            <th>Item</th>
-            <th>Quantity</th>
-            <th>Subtotal</th>
+            <td colspan="3"><strong>{category}</strong></td>
           </tr>
-        </thead>
-        <tbody>
           {#each items as { vegetable, quantity }}
             <tr>
               <td>{vegetable.name}</td>
@@ -39,10 +41,15 @@
               <td>₪{(vegetable.pricePerUnit * quantity).toFixed(2)}</td>
             </tr>
           {/each}
-        </tbody>
-      </table>
-    {/each}
-    <h3>Total: ₪{total.toFixed(2)}</h3>
+        {/each}
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="2">Total</th>
+          <th>₪{total.toFixed(2)}</th>
+        </tr>
+      </tfoot>
+    </table>
   </article>
 
   <p>
