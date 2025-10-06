@@ -18,13 +18,13 @@ export const actions = {
       data: { isActive: false },
       where: { id: form.data.id }
     });
-    throw redirect(303, '/submitted');
+    redirect(303, '/submitted');
   }
 };
 
 export const load = async ({ request, locals, params }) => {
   await locals.requireLogin();
-  const order = params.id
+  const order = await (params.id
     ? prisma.order.findUnique({
         where: { id: params.id },
         include: { userOrderVegetables: true }
@@ -32,9 +32,9 @@ export const load = async ({ request, locals, params }) => {
     : prisma.order.findFirst({
         orderBy: { updatedAt: 'desc' },
         include: { userOrderVegetables: true }
-      });
+      }));
   if (!order) {
-    throw error(404, 'Order not found');
+    error(404, 'Order not found');
   }
-  return { order, form: superValidate(request, closeOrderSchema) };
+  return { order, form: await superValidate(request, closeOrderSchema) };
 };

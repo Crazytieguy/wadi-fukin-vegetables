@@ -9,12 +9,12 @@ import { sequence } from '@sveltejs/kit/hooks';
 const addAuthorization = (async ({ event, resolve }) => {
   event.locals.requireLogin = async () => {
     const session = await event.locals.getSession();
-    if (!session?.user) throw error(401, 'not signed in');
+    if (!session?.user) error(401, 'not signed in');
     return { user: session.user };
   };
   event.locals.requireAdmin = async () => {
     const { user } = await event.locals.requireLogin();
-    if (!user.isAdmin) throw error(403, 'not an admin');
+    if (!user.isAdmin) error(403, 'not an admin');
     return { user };
   };
   return await resolve(event);

@@ -103,15 +103,18 @@ export const actions = {
 };
 
 export const load = async (event) => {
-  const form = superValidate(event, createVegetableSchema);
-  const deleteForm = superValidate(event, deleteVegetablesSchema, { id: 'delete' });
+  const [form, deleteForm, vegetables] = await Promise.all([
+    superValidate(event, createVegetableSchema),
+    superValidate(event, deleteVegetablesSchema, { id: 'delete' }),
+    prisma.vegetable.findMany({
+      where: { hidden: false },
+      orderBy: { createdAt: 'asc' }
+    })
+  ]);
 
   return {
     ...(await event.locals.requireAdmin()),
-    vegetables: prisma.vegetable.findMany({
-      where: { hidden: false },
-      orderBy: { createdAt: 'asc' }
-    }),
+    vegetables,
     form,
     deleteForm
   };

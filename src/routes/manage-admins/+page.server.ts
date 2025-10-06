@@ -32,6 +32,6 @@ export const load = async ({ request, locals }) => {
   return {
     user: { id: user.id },
     users,
-    form: superValidate(request, updateUserSchema)
+    form: await superValidate(request, updateUserSchema)
   };
 };
