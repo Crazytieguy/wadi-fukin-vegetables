@@ -53,7 +53,7 @@
   </article>
 
   <p>
-    <a href="/" role="button" class="secondary">Update My Order</a>
+    <a href="/" role="button" class="secondary">← Edit My Order</a>
   </p>
 {:else}
   <p>You haven't ordered any items yet.</p>
