@@ -77,7 +77,7 @@
 
 <h1>Manage Vegetables</h1>
 
-<form method="POST" action="?/create" use:enhance>
+<form method="POST" action="?/create" enctype="multipart/form-data" use:enhance>
   {#if $form.replaceId}
     <input type="hidden" name="replaceId" value={$form.replaceId} {...$constraints.replaceId} />
   {/if}
