@@ -47,7 +47,7 @@ model Order {
 model OrderVegetable {
   order               Order                @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId             String
-  vegetable           Vegetable            @relation(fields: [vegetableId], references: [id], onDelete: Cascade)
+  vegetable           Vegetable            @relation(fields: [vegetableId], references: [id], onDelete: Restrict)
   vegetableId         String
   userOrderVegetables UserOrderVegetable[]
 
@@ -59,7 +59,7 @@ model UserOrderVegetable {
   userId         String
   order          Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId        String
-  vegetable      Vegetable      @relation(fields: [vegetableId], references: [id], onDelete: Cascade)
+  vegetable      Vegetable      @relation(fields: [vegetableId], references: [id], onDelete: Restrict)
   vegetableId    String
   orderVegetable OrderVegetable @relation(fields: [orderId, vegetableId], references: [orderId, vegetableId], onDelete: Cascade)
   quantity       Float
