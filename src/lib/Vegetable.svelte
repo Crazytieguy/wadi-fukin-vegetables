@@ -26,6 +26,7 @@
       </slot>
     </h5>
   </hgroup>
+  <slot name="above-footer" />
   {#if $$slots.default}
     <footer>
       <slot />

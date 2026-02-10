@@ -26,6 +26,7 @@ model Vegetable {
   pricePerUnit        Float
   sellerName          String?
   category            String?
+  minimumTotalQuantity Float?
   hidden              Boolean              @default(false)
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt

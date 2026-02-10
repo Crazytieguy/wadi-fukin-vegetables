@@ -10,7 +10,8 @@ const createVegetableSchema = z.object({
   unit: z.enum(['Kg', 'G', 'Unit']),
   pricePerUnit: z.number().multipleOf(0.01).positive(),
   sellerName: z.string(),
-  category: z.string()
+  category: z.string(),
+  minimumTotalQuantity: z.number().positive().nullish()
 });
 
 const deleteVegetablesSchema = z.object({

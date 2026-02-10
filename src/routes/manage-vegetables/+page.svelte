@@ -42,6 +42,7 @@
     $form.pricePerUnit = 0;
     $form.sellerName = '';
     $form.category = '';
+    $form.minimumTotalQuantity = undefined;
   };
 
   $: fuse = new Fuse(data.vegetables, {
@@ -132,6 +133,20 @@
         />
       </label>
     </div>
+    <div class="grid">
+      <label>
+        <p>Min Qty:</p>
+        <input
+          type="number"
+          name="minimumTotalQuantity"
+          bind:value={$form.minimumTotalQuantity}
+          step="0.1"
+          min="0"
+          placeholder="Optional"
+        />
+      </label>
+      <div />
+    </div>
     <div class="buttons">
       {#if $form.replaceId}
         <button class="contrast" on:click|preventDefault={cancel}>Cancel</button>
@@ -201,6 +216,7 @@
               $form.pricePerUnit = vegetable.pricePerUnit;
               $form.sellerName = vegetable.sellerName ?? '';
               $form.category = vegetable.category ?? '';
+              $form.minimumTotalQuantity = vegetable.minimumTotalQuantity ?? undefined;
               mainForm.scrollIntoView({ behavior: 'smooth' });
             }}
           >

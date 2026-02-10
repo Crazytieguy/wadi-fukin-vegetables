@@ -48,6 +48,15 @@
 
   $: sellerTotals = reduceBy(userOrderVegetables, sellerByVegId, priceReducer, 0);
 
+  $: underMinimumVegetableIds = new Set(
+    orderVegetablesToVegQuantities(userOrderVegetables)
+      .filter(
+        ([vegetable, quantity]) =>
+          vegetable.minimumTotalQuantity != null && quantity < vegetable.minimumTotalQuantity
+      )
+      .map(([vegetable]) => vegetable.id)
+  );
+
   $: userSellerOrderVegetables = new Map(
     [...groupBy(userOrderVegetables, ({ userId }) => userId)].map(
       ([userId, userOrderVegetables]) => {
@@ -126,11 +135,14 @@
             </td>
           </tr>
           {#each orderVegetablesToVegQuantities(orderVegetables) as [vegetable, quantity] (vegetable.id)}
-            <tr>
+            <tr class:under-minimum={userId === 'total' && underMinimumVegetableIds.has(vegetable.id)}>
               <td>{vegetable.name}</td>
               <td>
                 {quantity}
                 {vegetable.unit}
+                {#if userId === 'total' && vegetable.minimumTotalQuantity != null}
+                  <small>(min: {vegetable.minimumTotalQuantity})</small>
+                {/if}
               </td>
             </tr>
           {/each}
@@ -166,5 +178,8 @@
 
   td[colspan='2'] {
     text-align: center;
+  }
+  .under-minimum td {
+    color: var(--del-color);
   }
 </style>

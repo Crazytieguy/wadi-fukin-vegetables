@@ -50,6 +50,13 @@
         <section class="vegetable-grid">
           {#each orderVegetables as { vegetable, vegetableId } (vegetableId)}
             <Vegetable {vegetable}>
+              <div slot="above-footer" class="min-qty">
+                {#if vegetable.minimumTotalQuantity}
+                  {@const current = data.communityTotals[vegetableId] ?? 0}
+                  <progress value={current} max={vegetable.minimumTotalQuantity} />
+                  <small>Community: {current} / {vegetable.minimumTotalQuantity} {vegetable.unit}</small>
+                {/if}
+              </div>
               <input
                 type="number"
                 name={vegetableId}
@@ -85,5 +92,17 @@
   }
   summary {
     font-size: 1.5rem;
+  }
+  .min-qty {
+    text-align: center;
+  }
+  .min-qty progress {
+    margin-bottom: 0;
+  }
+  .min-qty small {
+    color: var(--muted-color);
+  }
+  .min-qty:not(:empty) {
+    margin-bottom: var(--spacing);
   }
 </style>

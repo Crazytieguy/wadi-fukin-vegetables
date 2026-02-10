@@ -38,9 +38,27 @@ const getLastOrderAndSchema = async (userId: string) => {
 export const load = async ({ request, locals }) => {
   const { user } = await locals.requireLogin();
   const { lastOrder, schema } = await getLastOrderAndSchema(user.id);
-  return lastOrder
-    ? { user, lastOrder, form: await superValidate(request, schema) }
-    : { user, lastOrder };
+  if (!lastOrder) {
+    return { user, lastOrder, communityTotals: {} as Record<string, number> };
+  }
+
+  const minQtyVegetableIds = lastOrder.orderVegetables
+    .filter((ov) => ov.vegetable.minimumTotalQuantity != null)
+    .map((ov) => ov.vegetableId);
+
+  let communityTotals: Record<string, number> = {};
+  if (minQtyVegetableIds.length > 0) {
+    const grouped = await prisma.userOrderVegetable.groupBy({
+      by: ['vegetableId'],
+      where: { orderId: lastOrder.id, vegetableId: { in: minQtyVegetableIds } },
+      _sum: { quantity: true }
+    });
+    communityTotals = Object.fromEntries(
+      grouped.map((g) => [g.vegetableId, g._sum.quantity ?? 0])
+    );
+  }
+
+  return { user, lastOrder, communityTotals, form: await superValidate(request, schema) };
 };
 
 export const actions = {
