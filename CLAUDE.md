@@ -1,2 +1,1 @@
 - This project uses pnpm
-- Always create a branch for changes, never push directly to master
