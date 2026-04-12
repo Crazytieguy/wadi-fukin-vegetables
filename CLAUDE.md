@@ -1,1 +1,6 @@
 - This project uses pnpm
+- Use `playwright-cli` (installed globally) for manual testing:
+  - Auth state is saved at `.playwright-cli/auth-state.json` (~30 day expiry). Load it after opening: `playwright-cli open <url>`, `playwright-cli state-load .playwright-cli/auth-state.json`, `playwright-cli reload`
+  - If state-load fails (expired), open with `--headed` so the user can re-authenticate, then `playwright-cli state-save .playwright-cli/auth-state.json`
+  - Use `click` to simulate user actions, not `check`/`uncheck`
+  - Take screenshots (`playwright-cli screenshot`) to verify visual quality of frontend changes
